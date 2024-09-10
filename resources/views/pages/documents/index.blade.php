@@ -4,12 +4,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">Programs</h4>
+            <h4 class="mb-sm-0 font-size-18">Requirements</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
-                    <li class="breadcrumb-item active">Programs</li>
+                    <li class="breadcrumb-item active">Requirements</li>
                 </ol>
             </div>
 
@@ -22,33 +22,25 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-
-            
+      
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="card-title">List of Campuses</h4>
-                <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Campus</button>
+                <h4 class="card-title">List of Requirements</h4>
+                <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Requirement</button>
             </div>
-      
-      
 
                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
                     <thead>
                     <tr>
-                        <th>Abbreviation</th>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Campus</th>
                         <th>Action</th>
-               
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach($programs as $program)
+                        @foreach($documents as $document)
                         <tr>
-                            <td>{{ $program->abbreviation}}</td>
-                            <td>{{ $program->name}}</td>
-                            <td>{{ $program->description}}</td>
-                            <td>{{ isset($program->campus) ? $program->campus->name : 'No campus assigned' }}</td>
+                            <td>{{ $document->name}}</td>
+                            <td>{{ $document->description}}</td>
                             <td>
                                 <div class="dropdown">
                                     <button class="btn btn-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,10 +48,10 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" onclick="get_data({{ $program->id }})">View Details</a>
+                                        <a class="dropdown-item" href="javascript:void(0);" onclick="get_data({{ $document->id }})">View Details</a>
                                     </li>
 
-                                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="delete_campus({{ $program->id }})">Delete</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="delete_document({{ $document->id }})">Delete</a></li>
                                     </ul>
                                 </div>
                             </td>
@@ -79,29 +71,13 @@
     </div>
     <div class="offcanvas-body">
             <div class="card-body">
-                <h4 class="card-title mb-4">Campus Details</h4>
+                <h4 class="card-title mb-4">Requirement Details</h4>
 
-                <form method="POST" action="{{ route('programs.create') }}" class="needs-validation" novalidate>
+                <form method="POST" action="{{ route('document.create') }}" class="needs-validation" novalidate>
                 @csrf
                     <div class="mb-3">
-                        <label  class="form-label">Abbreviation</label>
-                        <input type="text" class="form-control" name="abbreviation" placeholder="Enter Abbreviation">
-                    </div>
-
-                    <div class="mb-3">
-                        <label  class="form-label">Program Name</label>
-                        <input type="text" class="form-control" name="name" placeholder="Program Name">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="control-label">Campuses</label>
-                        <select class="form-control select2" name="campus_id" required>
-                            <option value="">Select</option>
-                            @foreach ($campuses as $campus)
-                                <option value="{{ $campus->id }}">{{ $campus->name }}</option>
-                            @endforeach
-                        </select>
-                        <x-input-error :messages="$errors->get('campus_id')" class="mt-2" />
+                        <label  class="form-label">Requirement Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="Enter Your Campus Name">
                     </div>
 
                     <div class="mb-3">
@@ -130,49 +106,29 @@
     </div>
 </div>
 
+
+
 </x-app-layout>
 
 <script>
-        const appUrl = document.querySelector('meta[name="app-url"]').getAttribute('content');
 
-    $(document).ready(function() {
-        var table = $("#datatable-buttons").DataTable({
-            lengthChange: false,
-            buttons: ["copy", "excel", "pdf", "colvis"]
-        });
-
-        table.buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)");
-        $(".dataTables_length select").addClass("form-select form-select-sm");
-
-        // Fetching the unique programs from Laravel Blade
-        var campuses = @json($campuses);
-
-        setTimeout(function() {
-            // Create a filter dropdown for campuses
-            var campusFilter = '<label "> Filter by Campus: <select id="campus-filter" class="form-select form-select-sm" style="display: inline-block; width: auto;">' +
-                '<option value="">Select Campus</option>';
-
-            // Generate the options dynamically
-            campuses.forEach(function(campus) {
-                campusFilter += '<option value="' + campus.name + '">' + campus.name + '</option>';
-            });
-
-            campusFilter += '</select></label>';
-
-            // Insert the filter dropdown before the search input
-            $(campusFilter).insertBefore('#datatable-buttons_wrapper .dataTables_filter input');
-
-            // Add an event listener to filter the table by the selected program
-            $('#campus-filter').on('change', function() {
-                var selectedCampus = $(this).val();
-                table.column(3).search(selectedCampus).draw(); // Update column index based on actual Program column
-            });
-        }, 100); // Adjust delay if necessary
+const appUrl = document.querySelector('meta[name="app-url"]').getAttribute('content');
+$(document).ready(function() {
 
 
 
+    var table = $("#datatable-buttons").DataTable({
+        lengthChange: false,
+        buttons: ["copy", "excel", "pdf", "colvis"]
     });
 
+    table.buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)");
+
+    $(".dataTables_length select").addClass("form-select form-select-sm");
+
+
+
+});
 
 function get_data(id) {
     // Your code to handle the ID
@@ -180,7 +136,7 @@ function get_data(id) {
     $('#offcanvasRightedit').offcanvas('show');
     $.ajax({
         type: "POST",
-        url:appUrl + '/programs/edit',
+        url:appUrl + '/document/edit',
         headers: {
             'X-CSRF-TOKEN': csrfToken
         },
@@ -193,12 +149,12 @@ function get_data(id) {
     });
 }
 
-function delete_campus(id) {
+function delete_document(id) {
     // Your code to handle the ID
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
     $.ajax({
         type: "POST",
-        url:appUrl + '/programs/delete',
+        url:appUrl + '/document/delete',
         headers: {
             'X-CSRF-TOKEN': csrfToken
         },

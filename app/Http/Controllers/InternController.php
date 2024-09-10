@@ -12,9 +12,18 @@ class InternController extends Controller
 {
     public function index()
     {
-        $interns = User::with(['campus', 'programs'])
-        ->where('usertype', 'Student')
-        ->get();
+        if (auth()->user()->usertype == 'Admin') {
+            $interns = User::with(['campus', 'programs'])
+                ->where('usertype', 'Student')
+                ->get();
+        } else {
+            $interns = User::with(['campus', 'programs'])
+            ->where('usertype', 'Student')
+            ->where('campus_id', auth()->user()->campus_id)
+            ->get();
+        }
+    
+
         $programs = Program::all();
         $campuses = Campuses::all();
         return view('pages.students.index',compact('interns','programs','campuses'));

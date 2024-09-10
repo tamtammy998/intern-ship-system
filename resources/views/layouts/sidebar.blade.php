@@ -44,7 +44,7 @@
                     <span key="t-authentication">User Management</span>
                 </a>
                 <ul class="sub-menu" aria-expanded="false">
-                    <li><a href="auth-login.html" key="t-login">User</a></li>
+                    <li><a href="{{ route('user.index') }}" key="t-login">User</a></li>
                 </ul>
             </li>
 
@@ -55,6 +55,7 @@
                     <span key="t-projects">Settings</span>
                 </a>
                 <ul class="sub-menu" aria-expanded="false">
+                    <li><a href="{{ route('document.index') }}" key="t-p-grid">Requirements</a></li>
                     <li><a href="{{ route('campuses.index') }}" key="t-p-grid">Campuses</a></li>
                     <li><a href="{{ route('programs.index') }}" key="t-p-list">Programs</a></li>
                 </ul>
@@ -62,8 +63,64 @@
 
      
         </ul>
-        @else
+        @elseif(Auth::user()->usertype == 'ojt_in_charge')
+        <ul class="metismenu list-unstyled" id="side-menu">
+            <li class="menu-title" key="t-menu">Menu</li>
 
+            <li>
+                <a href="/dashboard" class="waves-effect">
+                    <i class="bx bx-home-circle"></i>
+                    <span key="t-dashboards">Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('intern.index') }}" class="waves-effect">
+                    <i class="bx bx-tone"></i>
+                    <span key="t-programs">Interns</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="chat.html" class="waves-effect">
+                    <i class="bx bxs-bar-chart-alt-2"></i>
+                    <span key="t-dashboards">Accomplishment Report</span>
+                </a>
+            </li>
+        </ul>
+        @else
+        <ul class="metismenu list-unstyled" id="side-menu">
+            <li class="menu-title" key="t-menu">Menu</li>
+
+            <li>
+                <a href="/dashboard" class="waves-effect">
+                    <i class="bx bx-home-circle"></i>
+                    <span key="t-dashboards">Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('student.index') }}" class="waves-effect">
+                    <i class="bx bx-tone"></i>
+                    <span key="t-programs">Profile</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('requirement.index') }}" class="waves-effect">
+                    <i class="bx bxs-bar-chart-alt-2"></i>
+                    <span key="t-dashboards">Upload Requirements</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="chat.html" class="waves-effect">
+                    <i class="bx bxs-bar-chart-alt-2"></i>
+                    <span key="t-dashboards">Daily Time Records</span>
+                </a>
+            </li>
+
+        </ul>
         @endif
     </div>
     <!-- Sidebar -->

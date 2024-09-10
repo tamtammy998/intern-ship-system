@@ -3,15 +3,18 @@
 use App\Http\Controllers\Branch;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CampusesController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\InternController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\RequirementController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -47,7 +50,32 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [BranchController::class, 'index'])->name('index');
         });
 
+        Route::name('user.')->prefix('/user')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::post('/edit', [UserController::class, 'edit'])->name('edit');
+            Route::post('/create', [UserController::class, 'store'])->name('create');
+            Route::put('/update/{users}', [UserController::class, 'update'])->name('update'); // Updated here
+            Route::post('/delete', [UserController::class, 'destroy'])->name('delete');
+        });
 
+        Route::name('student.')->prefix('/student')->group(function () {
+            Route::get('/', [StudentController::class, 'index'])->name('index');
+        });
+        Route::name('requirement.')->prefix('/requirement')->group(function () {
+            Route::get('/', [RequirementController::class, 'index'])->name('index');
+            Route::post('/create', [RequirementController::class, 'store'])->name('create');
+            Route::get('/documents/{document}/download', [RequirementController::class, 'download'])->name('documents.download');
+            Route::post('/delete', [RequirementController::class, 'destroy'])->name('delete');
+        });
+    
+
+        Route::name('document.')->prefix('/document')->group(function () {
+            Route::get('/', [DocumentController::class, 'index'])->name('index');
+            Route::post('/edit', [DocumentController::class, 'edit'])->name('edit');
+            Route::post('/create', [DocumentController::class, 'store'])->name('create');
+            Route::put('/update/{documents}', [DocumentController::class, 'update'])->name('update'); // Updated here
+            Route::post('/delete', [DocumentController::class, 'destroy'])->name('delete');
+        });
 });
 
 require __DIR__.'/auth.php';

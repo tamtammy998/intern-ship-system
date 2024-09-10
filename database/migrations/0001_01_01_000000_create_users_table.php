@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('student_id');
+            $table->string('student_id')->nullable()->default(null);
             $table->string('first_name')->nullable()->default(null);
             $table->string('middle_name')->nullable()->default(null);
             $table->string('last_name')->nullable()->default(null);
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('contact')->nullable()->default(null);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('usertype')->nullable()->default('Student');
+            $table->string('usertype')->nullable()->default('null');
             $table->rememberToken();
             $table->timestamps();
         });

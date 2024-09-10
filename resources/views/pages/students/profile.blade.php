@@ -67,7 +67,6 @@
                                     <th scope="row">Campus Location :</th>
                                     <td>{{ isset($intern->campus) ? $intern->campus->location : 'No campus assigned' }}</td>
                                 </tr>
-
                             </tbody>
                         </table>
                     </div><br>
@@ -87,7 +86,7 @@
                                     <td>{{ $intern->ccontact }}</td>
                                 </tr>
                             </tbody>
-                        </table>
+                    </table>
                 </div>
             </div>
             <!-- end card -->

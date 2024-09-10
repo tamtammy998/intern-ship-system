@@ -17,7 +17,7 @@ class UserTableSeeder extends Seeder
             'student_id' => '00000',
             'first_name' => 'Hecel',
             'email' => 'kavibes11@gmail.com',
-             'usertype' => 'admin',
+             'usertype' => 'Admin',
             'password' => bcrypt('password'),
         ]);
     }

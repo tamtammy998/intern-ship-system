@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Campuses;
+namespace App\Http\Requests\Documents;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCampus extends FormRequest
+class UpdateDocument extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,6 @@ class UpdateCampus extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'president' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
         ];
     }

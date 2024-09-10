@@ -6,6 +6,15 @@
 <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="{{ asset('assets/css/icons.min.css') }}"  rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}"  rel="stylesheet" type="text/css"/>
+
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap-icons.css') }}"  rel="stylesheet" />
+
+
 <script src="{{ asset('assets/js/plugin.js') }}"></script>
 
-
+<style>
+    .swal2-container .swal2-title {
+        text-align: center !important;
+        margin: 0;
+    }
+</style>
