@@ -1,6 +1,6 @@
 <x-app-layout>
 <script src="{{ asset('assets/js/pages/echarts.init.js') }}"></script>
-
+@if(Auth::user()->usertype == 'Admin')
 <!-- start page title -->
 <div class="row">
     <div class="col-12">
@@ -771,4 +771,350 @@
     </div>
 
 </div>
+@elseif(Auth::user()->usertype == 'ojt_in_charge')
+
+@else
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">IRMS</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
+                    <li class="breadcrumb-item active">IRMS</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 me-3">
+                                <img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-md rounded-circle img-thumbnail">
+                            </div>
+                            <div class="flex-grow-1 align-self-center">
+                                <div class="text-muted">
+                                    <p class="mb-2">Welcome to IRMS </p>
+                                    <h5 class="mb-1">{{ Auth::user()->first_name }}</h5>
+                                    <p class="mb-0">{{ Auth::user()->usertype }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 align-self-center">
+                        <div class="text-lg-center mt-4 mt-lg-0">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div>
+                                        <p class="text-muted text-truncate mb-2">Completion</p>
+                                        <h5 class="mb-0">{{ Auth::user()->completion }}</h5>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div>
+                                        <p class="text-muted text-truncate mb-2">Rendered</p>
+                                        <h5 class="mb-0">40</h5>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div>
+                                        <p class="text-muted text-truncate mb-2">Remaining</p>
+                                        <h5 class="mb-0">18</h5>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 d-none d-lg-block">
+                        <div class="clearfix mt-4 mt-lg-0">
+                            <div class="dropdown float-end">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="bx bxs-cog align-middle me-1"></i> Setting
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">INTERNSHIP STATUS</h4>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p class="text-muted">Rendered</p>
+                        <h3>$34,252</h3>
+                        <p class="text-muted">Total Hours Rendered</p>
+
+                        
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mt-4 mt-sm-0">
+                            <div id="radialBar-chart" data-colors='["--bs-primary"]' class="apex-charts"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Submitted Requirements</h4>
+                <div class="table-responsive">
+                    <table class="table table-nowrap table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Requirements</th>
+                                <th scope="col">Date Submitted</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach($uploads as $upload)
+                            <tr>                       
+                                <td>{{ $upload->document->name}}</td>
+                                <td>  {{ date('m/d/Y g:i A', strtotime($upload->document->created_at)) }}</td>
+                                <td>{{ $upload->status }}</td>
+                            </tr>
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-xl-8">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Daily Time Record</h4>
+                        <div class="table-responsive">
+                            <table class="table align-middle table-nowrap mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 20px;">
+                                            <div class="form-check font-size-16 align-middle">
+                                                <input class="form-check-input" type="checkbox" id="transactionCheck01">
+                                                <label class="form-check-label" for="transactionCheck01"></label>
+                                            </div>
+                                        </th>
+                                        <th class="align-middle">Order ID</th>
+                                        <th class="align-middle">Billing Name</th>
+                                        <th class="align-middle">Date</th>
+                                        <th class="align-middle">Total</th>
+                                        <th class="align-middle">Payment Status</th>
+                                        <th class="align-middle">Payment Method</th>
+                                        <th class="align-middle">View Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check font-size-16">
+                                                <input class="form-check-input" type="checkbox" id="transactionCheck02">
+                                                <label class="form-check-label" for="transactionCheck02"></label>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript: void(0);" class="text-body fw-bold">#SK2540</a> </td>
+                                        <td>Neal Matthews</td>
+                                        <td>
+                                            07 Oct, 2019
+                                        </td>
+                                        <td>
+                                            $400
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-pill badge-soft-success font-size-11">Paid</span>
+                                        </td>
+                                        <td>
+                                            <i class="fab fa-cc-mastercard me-1"></i> Mastercard
+                                        </td>
+                                        <td>
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".transaction-detailModal">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class="form-check font-size-16">
+                                                <input class="form-check-input" type="checkbox" id="transactionCheck03">
+                                                <label class="form-check-label" for="transactionCheck03"></label>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript: void(0);" class="text-body fw-bold">#SK2541</a> </td>
+                                        <td>Jamal Burnett</td>
+                                        <td>
+                                            07 Oct, 2019
+                                        </td>
+                                        <td>
+                                            $380
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-pill badge-soft-danger font-size-11">Chargeback</span>
+                                        </td>
+                                        <td>
+                                            <i class="fab fa-cc-visa me-1"></i> Visa
+                                        </td>
+                                        <td>
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".transaction-detailModal">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class="form-check font-size-16">
+                                                <input class="form-check-input" type="checkbox" id="transactionCheck04">
+                                                <label class="form-check-label" for="transactionCheck04"></label>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript: void(0);" class="text-body fw-bold">#SK2542</a> </td>
+                                        <td>Juan Mitchell</td>
+                                        <td>
+                                            06 Oct, 2019
+                                        </td>
+                                        <td>
+                                            $384
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-pill badge-soft-success font-size-11">Paid</span>
+                                        </td>
+                                        <td>
+                                            <i class="fab fa-cc-paypal me-1"></i> Paypal
+                                        </td>
+                                        <td>
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".transaction-detailModal">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check font-size-16">
+                                                <input class="form-check-input" type="checkbox" id="transactionCheck05">
+                                                <label class="form-check-label" for="transactionCheck05"></label>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript: void(0);" class="text-body fw-bold">#SK2543</a> </td>
+                                        <td>Barry Dick</td>
+                                        <td>
+                                            05 Oct, 2019
+                                        </td>
+                                        <td>
+                                            $412
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-pill badge-soft-success font-size-11">Paid</span>
+                                        </td>
+                                        <td>
+                                            <i class="fab fa-cc-mastercard me-1"></i> Mastercard
+                                        </td>
+                                        <td>
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".transaction-detailModal">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check font-size-16">
+                                                <input class="form-check-input" type="checkbox" id="transactionCheck06">
+                                                <label class="form-check-label" for="transactionCheck06"></label>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript: void(0);" class="text-body fw-bold">#SK2544</a> </td>
+                                        <td>Ronald Taylor</td>
+                                        <td>
+                                            04 Oct, 2019
+                                        </td>
+                                        <td>
+                                            $404
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-pill badge-soft-warning font-size-11">Refund</span>
+                                        </td>
+                                        <td>
+                                            <i class="fab fa-cc-visa me-1"></i> Visa
+                                        </td>
+                                        <td>
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".transaction-detailModal">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check font-size-16">
+                                                <input class="form-check-input" type="checkbox" id="transactionCheck07">
+                                                <label class="form-check-label" for="transactionCheck07"></label>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript: void(0);" class="text-body fw-bold">#SK2545</a> </td>
+                                        <td>Jacob Hunter</td>
+                                        <td>
+                                            04 Oct, 2019
+                                        </td>
+                                        <td>
+                                            $392
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-pill badge-soft-success font-size-11">Paid</span>
+                                        </td>
+                                        <td>
+                                            <i class="fab fa-cc-paypal me-1"></i> Paypal
+                                        </td>
+                                        <td>
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".transaction-detailModal">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- end table-responsive -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endif
 </x-app-layout>

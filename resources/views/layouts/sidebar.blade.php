@@ -32,7 +32,7 @@
             </li>
 
             <li>
-                <a href="chat.html" class="waves-effect">
+                <a href="{{ route('record.index') }}" class="waves-effect">
                     <i class="bx bxs-bar-chart-alt-2"></i>
                     <span key="t-dashboards">Accomplishment Report</span>
                 </a>
@@ -114,7 +114,7 @@
             </li>
 
             <li>
-                <a href="chat.html" class="waves-effect">
+                <a href="{{ route('record.index') }}" class="waves-effect">
                     <i class="bx bxs-bar-chart-alt-2"></i>
                     <span key="t-dashboards">Daily Time Records</span>
                 </a>

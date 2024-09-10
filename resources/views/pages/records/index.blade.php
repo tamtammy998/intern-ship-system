@@ -33,54 +33,49 @@
                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Upload Type</th>
-                        <th>File Size</th>
-                        <th>Date Uploaded</th>
-                        <th>Notes</th>
-                        <th>Extension</th>
+                        <th>Date Range</th>
+                        <th>Hours</th>
+                        <th>Attachment</th>
+                        <th>Remarks</th>
                         <th>Status</th>
+                        <th>Date Uploaded</th>
                         <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($uploads as $upload)
-                    <tr>
-                        <td>
-                            <span>{{ strlen($upload->document_name) > 20 ? substr($upload->document_name,0,20)."..." : $upload->document_name; }}</span>
-                        </td>
-                        <td>{{ $upload->document->name }}</td>
-                        <td>{{ $upload->document_size }}</td>
-                        <td>{{ date('m/d/Y g:i A', strtotime($upload->created_at)) }}</td>
-                        <td>{{ $upload->description }}</td>
-                        <td>{{ $upload->document_extension }}</td>
-                        <td>{{ $upload->status }}</td>
-                        <td>
-                            <div class="d-flex justify-content-center">
-                                @if(in_array(strtolower($upload->document_extension), ['jpg', 'jpeg', 'pdf']))
-                                    <a class="btn btn-primary btn-sm me-2" 
+                        @foreach($records as $record)
+                        <tr>
+                            <td>{{ date('F j, Y', strtotime($record->date_from)) }} - {{ date('F j, Y', strtotime($record->date_to)) }} </td>
+                            <td>{{ $record->hours }}</td>
+                            <td>{{ $record->document_name }}</td>
+                            <td>{{ $record->remarks }}</td>
+                            <td>{{ $record->status }}</td>
+                            <td>{{ date('F j, Y', strtotime($record->created_at)) }}</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    @if(in_array(strtolower($record->document_extension), ['jpg', 'jpeg', 'pdf']))
+                                        <a class="btn btn-primary btn-sm me-2" 
+                                            href="#" 
+                                            title="View" 
+                                            onclick="handlePreview(event, '{{ asset('storage/'. $record->document_path) }}', {{ $record->id }})">
+                                            <i class="bx bx-file"></i>
+                                        </a>
+                                    @endif
+                                    
+                                    <a class="btn btn-success btn-sm me-2" 
                                         href="#" 
-                                        title="View" 
-                                        onclick="handlePreview(event, '{{ asset('storage/'. $upload->document_path) }}', {{ $upload->id }})">
-                                        <i class="bx bx-file"></i>
+                                        title="Download" 
+                                        onclick="handleDownload(event, {{ $record->id }})">
+                                        <i class="bx bxs-download"></i>
                                     </a>
-                                @endif
-                                
-                                <a class="btn btn-success btn-sm me-2" 
-                                    href="#" 
-                                    title="Download" 
-                                    onclick="handleDownload(event, {{ $upload->id }})">
-                                    <i class="bx bxs-download"></i>
-                                </a>
 
-                                    <button type="submit" onclick="delete_campus({{ $upload->id }})" class="btn btn-danger btn-sm" title="Delete">
-                                        <i class='bx bxs-trash-alt'></i>
-                                    </button>
-                            </div>
-                        </td>
-
-                    </tr>
-                    @endforeach
+                                        <button type="submit" onclick="delete_campus({{ $record->id }})" class="btn btn-danger btn-sm" title="Delete">
+                                            <i class='bx bxs-trash-alt'></i>
+                                        </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -97,19 +92,23 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">Requirement Details</h4>
 
-                <form method="POST" action="{{ route('requirement.create') }}" class="needs-validation" novalidate enctype="multipart/form-data">
+                <form method="POST" action="{{ route('record.create') }}" class="needs-validation" novalidate enctype="multipart/form-data">
                 @csrf
 
                  <div class="mb-3">
-                    <label class="control-label">Requirement Type</label>
-                    <select class="form-control select2" name="document_id" required>
-                        <option value="">Select</option>
-                        @foreach ($documents as $document)
-                            <option value="{{ $document->id }}">{{ $document->name }}</option>
-                        @endforeach
-                    </select>
+                    <label class="control-label">Date From</label>
+                    <input class="form-control" name="date_from" type="date">
                 </div>
 
+                <div class="mb-3">
+                    <label class="control-label">Date To</label>
+                    <input class="form-control" name="date_to" type="date">
+                </div>
+
+                <div class="mb-3">
+                    <label class="control-label">Hours</label>
+                    <input type="number" name="hours" class="form-control" placeholder="Enter Hours" required>
+                </div>
 
                     <div class="mb-3">
                         <label class="form-label">Attachement</label>
@@ -120,8 +119,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label  class="form-label">Notes</label>
-                        <textarea class="form-control" name="note"  placeholder="Enter Description"></textarea>
+                        <label  class="form-label">Remarks</label>
+                        <textarea class="form-control" name="remarks"  placeholder="Enter Description"></textarea>
                     </div>
                     <div>
                         <button type="submit" class="btn btn-primary w-md">Submit</button>
@@ -207,7 +206,7 @@ function delete_campus(id) {
         if (result.isConfirmed) {
             $.ajax({
                 type: "POST",
-                url: appUrl + '/requirement/delete',
+                url: appUrl + '/record/delete',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
@@ -261,7 +260,7 @@ async function handleDownload(event, documentId) {
         // Create a hidden form to trigger the file download
         const form = document.createElement('form');
         form.method = 'GET';
-        form.action = `/requirement/documents/${documentId}/download`; // Corrected to match the route
+        form.action = `/record/documents/${documentId}/download`; // Corrected to match the route
         form.style.display = 'none';
 
         // Append the form to the body and submit it

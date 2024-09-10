@@ -23,4 +23,5 @@ class StudentController extends Controller
         return view('pages.students.show',compact('intern','documents','uploads'));
     }
 
+
 }

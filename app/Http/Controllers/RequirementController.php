@@ -36,6 +36,7 @@ class RequirementController extends Controller
 
         $uploadsCount = Upload::where('student_id', auth()->user()->id)
         ->where('document_id', $request->input('document_id'))
+        ->where('status', 'pending')
         ->count();
         if($uploadsCount > 0){
             return redirect()->route('requirement.index')
@@ -79,7 +80,7 @@ class RequirementController extends Controller
                 'document_size' => $fileSize,
                 'document_extension' => $fileExtension,
                 'status' => 'pending',
-                'description' => $request->document_id,
+                'description' => $request->description,
             ]);
 
             return redirect()->route('requirement.index')->with('success', 'Requirement save successfully.');

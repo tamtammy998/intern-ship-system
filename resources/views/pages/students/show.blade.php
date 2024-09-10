@@ -125,51 +125,52 @@
                             </div>         
                             
                             <div class="col-xl-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">My Requirements</h4>
-                    <div class="table-responsive">
-                        <table class="table table-nowrap table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Requirements</th>
-                                    <th scope="col">Date Submitted</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($documents as $document)
-                             
-                                        <tr>
-                                            <td>{{ $document->name }}</td>
-                                            <td>
-                                                @foreach($uploads as $upload)
-                                                @if($document->id == $upload->document_id)
-                                                   {{ date('m/d/Y g:i A', strtotime($upload->created_at)) }}
-                                                @else
-                                                   not yet
-                                                @endif
-                                                @endforeach
-                                            </td>
-                                            <td>   
-                                                @foreach($uploads as $upload)
-                                                @if($document->id == $upload->document_id)
-                                                   {{ $upload->status }}
-                                                @else
-                                                   not yet
-                                                @endif
-                                                @endforeach
-                                            </td>
-                                        </tr>
-                               
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title mb-4">My Requirements</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-nowrap table-hover mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Requirements</th>
+                                                        <th scope="col">Date Submitted</th>
+                                                        <th scope="col">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($documents as $document)
+                                                
+                                                            <tr>
+                                                                <td>{{ $document->name }}</td>
+                                                                <td>
+                                                                    @foreach($uploads as $upload)
+                                                                    @if($document->id == $upload->document_id)
+                                                                    {{ date('m/d/Y g:i A', strtotime($upload->created_at)) }}
+                                                                    @else
+                                                                    not yet
+                                                                    @endif
+                                                                    @endforeach
+                                                                </td>
+                                                                <td>   
+                                                                    @foreach($uploads as $upload)
+                                                                    @if($document->id == $upload->document_id)
+                                                                    {{ $upload->status }}
+                                                                    @else
+                                                                    not yet
+                                                                    @endif
+                                                                    @endforeach
+                                                                </td>
+                                                            </tr>
+                                                
 
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                         <!-- end row -->
 </x-app-layout>

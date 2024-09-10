@@ -7,16 +7,23 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\InternController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\RecordController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
+use App\Models\Document;
+use App\Models\Upload;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $documents = Document::all();
+    $uploads = Upload::with('document')->where('student_id', auth()->user()->id)  // Use :: instead of -> to call the static method where
+    ->get();
+    
+    return view('dashboard',compact('documents','uploads'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -44,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::name('intern.')->prefix('/intern')->group(function () {
             Route::get('/', [InternController::class, 'index'])->name('index');
             Route::post('/show', [InternController::class, 'show'])->name('show');
+            Route::post('/status', [InternController::class, 'status'])->name('status');
         });
 
         Route::name('branch.')->prefix('/branch')->group(function () {
@@ -61,6 +69,7 @@ Route::middleware('auth')->group(function () {
         Route::name('student.')->prefix('/student')->group(function () {
             Route::get('/', [StudentController::class, 'index'])->name('index');
         });
+
         Route::name('requirement.')->prefix('/requirement')->group(function () {
             Route::get('/', [RequirementController::class, 'index'])->name('index');
             Route::post('/create', [RequirementController::class, 'store'])->name('create');
@@ -75,6 +84,13 @@ Route::middleware('auth')->group(function () {
             Route::post('/create', [DocumentController::class, 'store'])->name('create');
             Route::put('/update/{documents}', [DocumentController::class, 'update'])->name('update'); // Updated here
             Route::post('/delete', [DocumentController::class, 'destroy'])->name('delete');
+        });
+
+        Route::name('record.')->prefix('/record')->group(function () {
+            Route::get('/', [RecordController::class, 'index'])->name('index');
+            Route::post('/create', [RecordController::class, 'store'])->name('create');
+            Route::get('/documents/{document}/download', [RecordController::class, 'download'])->name('documents.download');
+            Route::post('/delete', [RecordController::class, 'destroy'])->name('delete');
         });
 });
 
