@@ -10,7 +10,8 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $campuses = Campuses::all();
+        // $campuses = Campuses::all();
+        $campuses = Campuses::with('program')->get();
         return view('pages.campuses.show',compact('campuses'));
     }
 }

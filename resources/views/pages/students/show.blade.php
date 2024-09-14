@@ -1,5 +1,6 @@
 <x-app-layout>
-
+<div id="error-messages"></div>
+<div id="success-message" style="display: none"></div>
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -43,17 +44,21 @@
 
                                             <div class="col-sm-8">
                                                 <div class="pt-4">
-                                                   
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <h5 class="font-size-15">125 Hrs</h5>
-                                                            <p class="text-muted mb-0">Rendered</p>
-                                                        </div>
+                                                   @if(Auth::user()->usertype == 'Student')
+                                                   <div class="row">
                                                         <div class="col-6">
                                                         <h5 class="font-size-15">{{ $intern->completion }} Hrs</h5>
                                                         <p class="text-muted mb-0">Completion</p>
                                                         </div>
+
+                                                        <div class="col-6">
+                                                            <h5 class="font-size-15">{{ $totalHours }} Hrs</h5>
+                                                            <p class="text-muted mb-0">Rendered</p>
+                                                        </div>
                                                     </div>
+                                                   @else
+                                                   @endif
+                                            
                                                
                                                 </div>
                                             </div>
@@ -63,7 +68,11 @@
                                 <!-- end card -->
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title mb-4">Personal Information</h4>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <h4 class="card-title mb-0">Personal Information</h4>
+                                            <button class="btn btn-secondary" type="button"  onclick="get_data({{ $intern->id }})">Edit User</button>
+                                        </div>
 
                                         <div class="table-responsive">
                                             <table class="table table-nowrap mb-0">
@@ -116,8 +125,9 @@
                                                     </tr>
                                                 </tbody>
                                         </table>
-
+<br>
                                     </div>
+
                                 </div>
                                 <!-- end card -->
                                  
@@ -138,32 +148,18 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($documents as $document)
-                                                
-                                                            <tr>
-                                                                <td>{{ $document->name }}</td>
-                                                                <td>
-                                                                    @foreach($uploads as $upload)
-                                                                    @if($document->id == $upload->document_id)
-                                                                    {{ date('m/d/Y g:i A', strtotime($upload->created_at)) }}
-                                                                    @else
-                                                                    not yet
-                                                                    @endif
-                                                                    @endforeach
-                                                                </td>
-                                                                <td>   
-                                                                    @foreach($uploads as $upload)
-                                                                    @if($document->id == $upload->document_id)
-                                                                    {{ $upload->status }}
-                                                                    @else
-                                                                    not yet
-                                                                    @endif
-                                                                    @endforeach
-                                                                </td>
-                                                            </tr>
-                                                
+                                                @foreach($documents as $document)
+                                                    <tr>
+                                                        <td>{{ $document->name }}</td>
+                                                        <td> 
+                                                        {{ @$document->upload->created_at ? date('m/d/Y g:i A', strtotime($document->upload->created_at)) : 'Not yet' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ @$document->upload->status ?  $document->upload->status : 'Not yet' }}
 
-                                                    @endforeach
+                                                    </td>
+                                                    </tr>
+                                                @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -171,6 +167,38 @@
                                 </div>
                             </div>
                             
-                        </div>
+                        </div>  
                         <!-- end row -->
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                            <div class="offcanvas-header">
+                                <h5 id="offcanvasRightLabel"></h5>
+                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <div class="px-0 pb-0 tab-campus-content">
+
+                                </div>   
+                            </div>
+                        </div>
 </x-app-layout>
+
+<script>
+        const appUrl = document.querySelector('meta[name="app-url"]').getAttribute('content');
+    function get_data(id)
+    {
+        $('#offcanvasRight').offcanvas('show');
+        $.ajax({
+            type: "POST",
+            url:appUrl + '/user/profile_edit',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                id: id // Your data
+            },
+            success: function(data) {
+                $(".tab-campus-content").show().html(data);
+            }
+        });
+    }
+</script>

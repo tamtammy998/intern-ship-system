@@ -63,6 +63,9 @@
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         <li>
+                                            <a class="dropdown-item" href="javascript:void(0);" onclick="change_password({{ $user->id }})">Change Password</a>
+                                        </li>
+                                        <li>
                                             <a class="dropdown-item" href="javascript:void(0);" onclick="get_data({{ $user->id }})">View Details</a>
                                         </li>
 
@@ -107,7 +110,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label  class="form-label">Office In Charge</label>
+                        <label  class="form-label">User Type</label>
                         <select class="form-select" name="usertype">
                             <option selected>Select Type</option>
                             <option value="admin">Admin</option>
@@ -126,7 +129,7 @@
 
                     <div class="mb-3">
                         <label class="control-label">Campuses</label>
-                        <select class="form-control select2" name="campus_id" required>
+                        <select class="form-control select2" name="campus_id" onchange="get_program(this.value)" required>
                             <option value="">Select</option>
                             @foreach ($campuses as $campus)
                                 <option value="{{ $campus->id }}">{{ $campus->name }}</option>
@@ -136,11 +139,13 @@
 
                     <div class="mb-3">
                         <label class="control-label">Programs</label>
-                        <select class="form-control select2" name="courses_id" required>
-                            <option value="">Select</option>
+                        <select class="form-control select2" id="programs" name="courses_id" required>
+                        </select>
+
+                            <!-- <option value="">Select</option>
                             @foreach ($programs as $program)
                                 <option value="{{ $program->id }}">{{ $program->abbreviation }}</option>
-                            @endforeach
+                            @endforeach -->
                         </select>
                     </div>
 
@@ -175,6 +180,18 @@
     </div>
     <div class="offcanvas-body">
         <div class="px-0 pb-0 tab-campus-content">
+
+        </div>   
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="changePassword" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="px-0 pb-0 tab-campus-content-password">
 
         </div>   
     </div>
@@ -235,42 +252,90 @@
         }, 100);
     });
 
+    function get_program(id) {
+        $.ajax({
+            type: "POST",
+            url: appUrl + '/user/get_program',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                id: id // Your data
+            },
+            success: function(data) {
+                // Assuming there's a select element with an id of #programs
+                let programsSelect = $('#programs');
+                programsSelect.empty(); // Clear existing options
+
+                // Add a default option (optional)
+                programsSelect.append('<option value="">Select a program</option>');
+
+                // Append the programs to the select element
+                $.each(data, function(key, program) {
+                    programsSelect.append('<option value="' + program.id + '">' + program.abbreviation + '</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log('Error: ' + error);
+            }
+        });
+    }
+
+
     function get_data(id) {
     // Your code to handle the ID
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    $('#offcanvasRightedit').offcanvas('show');
-    $.ajax({
-        type: "POST",
-        url:appUrl + '/user/edit',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken
-        },
-        data: {
-            id: id // Your data
-        },
-        success: function(data) {
-            $(".tab-campus-content").show().html(data);
-        }
-    });
-}
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        $('#offcanvasRightedit').offcanvas('show');
+        $.ajax({
+            type: "POST",
+            url:appUrl + '/user/edit',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                id: id // Your data
+            },
+            success: function(data) {
+                $(".tab-campus-content").show().html(data);
+            }
+        });
+    }
 
-function delete_user(id) {
-    // Your code to handle the ID
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    $.ajax({
-        type: "POST",
-        url:appUrl + '/user/delete',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken
-        },
-        data: {
-            id: id // Your data
-        },
-        success: function(data) {
-            window.location.reload();
-        }
-    });
-}
+    function delete_user(id) {
+        // Your code to handle the ID
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        $.ajax({
+            type: "POST",
+            url:appUrl + '/user/delete',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                id: id // Your data
+            },
+            success: function(data) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function change_password(id)
+    {
+        $('#changePassword').offcanvas('show');
+        $.ajax({
+            type: "POST",
+            url:appUrl + '/user/password',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                id: id // Your data
+            },
+            success: function(data) {
+                $(".tab-campus-content-password").show().html(data);
+            }
+        });
+    }
 </script>
 
 <style>

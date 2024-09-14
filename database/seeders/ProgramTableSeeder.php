@@ -17,6 +17,7 @@ class ProgramTableSeeder extends Seeder
             'abbreviation' => 'BSCS',
             'name' => 'Bachelor of Science in Computer Science',
             'description' => 'description',
+            'campus_id' => 1
         ]);
     }
 }

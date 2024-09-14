@@ -49,12 +49,12 @@
                         <td>
                             <span>{{ strlen($upload->document_name) > 20 ? substr($upload->document_name,0,20)."..." : $upload->document_name; }}</span>
                         </td>
-                        <td>{{ $upload->document->name }}</td>
-                        <td>{{ $upload->document_size }}</td>
-                        <td>{{ date('m/d/Y g:i A', strtotime($upload->created_at)) }}</td>
-                        <td>{{ $upload->description }}</td>
-                        <td>{{ $upload->document_extension }}</td>
-                        <td>{{ $upload->status }}</td>
+                        <td>{{ @$upload->document->name }}</td>
+                        <td>{{ @$upload->document_size }}</td>
+                        <td>{{ @date('m/d/Y g:i A', strtotime($upload->created_at)) }}</td>
+                        <td>{{ @$upload->description }}</td>
+                        <td>{{ @$upload->document_extension }}</td>
+                        <td>{{ @$upload->status }}</td>
                         <td>
                             <div class="d-flex justify-content-center">
                                 @if(in_array(strtolower($upload->document_extension), ['jpg', 'jpeg', 'pdf']))

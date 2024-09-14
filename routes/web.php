@@ -11,19 +11,66 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
+use App\Models\Campuses;
 use App\Models\Document;
+use App\Models\Program;
+use App\Models\Record;
 use App\Models\Upload;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 Route::get('/dashboard', function () {
-    $documents = Document::all();
-    $uploads = Upload::with('document')->where('student_id', auth()->user()->id)  // Use :: instead of -> to call the static method where
+    $totalHours = '';
+    $remaining = '';
+    $percent = '';
+    $userCount = 0;
+    $campusCount = 0;
+    $programsCount = 0;
+    $user = '';
+
+    $documents = Document::with('upload')
+    ->whereHas('upload', function ($q) {
+        $q->where('student_id', auth()->user()->id);
+    })
+    ->orWhereDoesntHave('upload')
     ->get();
+
+    $user = User::with(['campus', 'programs', 'upload'])
+    ->where('id', auth()->user()->id)
+    ->firstOrFail();  // This will return the first matching user or throw a 404 if not found
+
+    $requirements = Document::all();
+    $campuses = Campuses::all();
+    $coordinators = User::with(['campus','programs'])->where('usertype', 'ojt_in_charge')->get();
+    if (auth()->user()->usertype == 'Admin') {
+        $userCount = User::where('usertype', 'Student')->count();
+        $records = Record::with(['student','campus','programs'])->get();
+        $campusCount = Campuses::all()->count();
+        $programsCount = Program::all()->count();
+    }elseif(auth()->user()->usertype == 'ojt_in_charge'){
+        $userCount = User::where('usertype', 'Student')
+        ->where('campus_id', auth()->user()->campus_id)
+        ->where('courses_id', auth()->user()->courses_id)
+        ->count();
     
-    return view('dashboard',compact('documents','uploads'));
+        $records = Record::with(['student','campus','programs'])->where('campus_id', auth()->user()->campus_id)
+                  ->where('courses_id', auth()->user()->courses_id)->get();
+    } else {
+        $records = Record::with(['student','campus','programs'])
+        ->where('student_id', auth()->user()->id)
+        ->get();
+        // $totalHours = $records->sum('hours');
+        $totalHours = Record::where('student_id', auth()->user()->id)->where('status','approved')
+        ->sum('hours');
+
+        $remaining = auth()->user()->completion - intval($totalHours);
+        $percent = round((intval($totalHours) / intval(auth()->user()->completion)) * 100, 2);
+
+    }
+    return view('dashboard',compact('documents','records','totalHours','remaining','percent','userCount','campusCount','programsCount','requirements','campuses','coordinators','user'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -46,6 +93,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/edit', [CampusesController::class, 'edit'])->name('edit');
             Route::put('/update/{campuses}', [CampusesController::class, 'update'])->name('update');
             Route::post('/delete', [CampusesController::class, 'destroy'])->name('delete');
+            Route::post('/program', [CampusesController::class, 'program'])->name('program');
+            
         });
 
         Route::name('intern.')->prefix('/intern')->group(function () {
@@ -64,6 +113,13 @@ Route::middleware('auth')->group(function () {
             Route::post('/create', [UserController::class, 'store'])->name('create');
             Route::put('/update/{users}', [UserController::class, 'update'])->name('update'); // Updated here
             Route::post('/delete', [UserController::class, 'destroy'])->name('delete');
+            Route::post('/campus', [UserController::class, 'campus'])->name('campus');
+            Route::post('/program', [UserController::class, 'program'])->name('program');
+            Route::post('/get_program', [UserController::class, 'getProgram'])->name('get_program');
+            Route::post('/password', [UserController::class, 'changePass'])->name('password');
+            Route::put('/update_password/{users}', [UserController::class, 'updatePass'])->name('update_password'); // Updated here
+            Route::post('/profile_edit', [UserController::class, 'profileEdit'])->name('profile_edit');
+            Route::put('/profile_update/{users}', [UserController::class, 'profileUpdate'])->name('profile_update');
         });
 
         Route::name('student.')->prefix('/student')->group(function () {
@@ -89,8 +145,10 @@ Route::middleware('auth')->group(function () {
         Route::name('record.')->prefix('/record')->group(function () {
             Route::get('/', [RecordController::class, 'index'])->name('index');
             Route::post('/create', [RecordController::class, 'store'])->name('create');
+            Route::put('/update/{records}', [RecordController::class, 'update'])->name('update'); // Updated here
             Route::get('/documents/{document}/download', [RecordController::class, 'download'])->name('documents.download');
             Route::post('/delete', [RecordController::class, 'destroy'])->name('delete');
+            Route::post('/data', [RecordController::class, 'data'])->name('data');
         });
 });
 

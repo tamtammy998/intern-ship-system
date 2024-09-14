@@ -36,6 +36,7 @@
                                 <th>Program</th>
                                 <th>Campus</th>
                                 <th>Completion</th>
+                                <th>Rendered</th>
                                 <th>Date of Internship</th>
                                 <th>Action</th>
                             </tr>
@@ -49,6 +50,7 @@
                                 <td>{{ isset($intern->programs) ? ucwords($intern->programs->abbreviation) : 'No programs assigned' }}</td>
                                 <td>{{ isset($intern->campus) ? $intern->campus->name : 'No campus assigned' }}</td>
                                 <td>{{ $intern->completion }}</td>
+                                <td>{{ $intern->upload_sum_hours ?? 0 }}</td>
                                 <td>{{ $intern->intern_start }}</td>
                                 <td>
                                     <ul class="list-inline font-size-20 contact-links mb-0">

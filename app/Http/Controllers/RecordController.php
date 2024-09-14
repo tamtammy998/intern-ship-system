@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Campuses;
+use App\Models\Program;
 use App\Models\Record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -14,10 +16,18 @@ class RecordController extends Controller
     {
         
         if (auth()->user()->usertype == 'Admin') {
-            $records = Record::with('student') ->get();
-            return view('pages.records.admin',compact('records'));
+            $programs = Program::all();
+            $campuses = Campuses::all();
+            $records = Record::with(['student','campus','programs']) ->get();
+            return view('pages.records.admin',compact('records','programs','campuses'));
+        }elseif(auth()->user()->usertype == 'ojt_in_charge'){
+            $records = Record::with(['student','campus','programs'])->where('campus_id', auth()->user()->campus_id)
+                      ->where('courses_id', auth()->user()->courses_id)->get();
+            $programs = Program::all();
+            $campuses = Campuses::all();       
+            return view('pages.records.admin',compact('records','programs','campuses'));
         } else {
-            $records = Record::with('student')
+            $records = Record::with(['student','campus','programs'])
             ->where('student_id', auth()->user()->id)
             ->get();
             return view('pages.records.index',compact('records'));
@@ -68,6 +78,8 @@ class RecordController extends Controller
 
         $document = Record::create([
             'student_id' => auth()->user()->id,
+            'campus_id' => auth()->user()->campus_id,
+            'courses_id' => auth()->user()->courses_id,
             'hours' => $request->hours,
             'document_name' => $fileName,
             'document_path' => $file->storeAs($uploadPath, $fileName, 'public'),
@@ -103,6 +115,21 @@ class RecordController extends Controller
         return response()->download($fullPath, $fileName);
     }
 
+    public function update(Record $records, Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'hours' => 'required|numeric|min:0',
+            'status' => 'required|string|max:255',
+        ]);
+    
+        // Update the record fields with validated data
+        $records->update($validatedData);
+        // Redirect back with a success message
+        return redirect()->route('record.index')->with('success', 'Record updated successfully.');
+    }
+    
+
     public function destroy(Request $request)
     {
         $id = $request->input('id');
@@ -114,6 +141,13 @@ class RecordController extends Controller
         }
         $records->delete();
         return redirect()->route('requirement.index')->with('success', 'Requirement delete successfully.');
+    }
+
+    public function data(Request $request)
+    {
+        $id = $request->input('id');
+        $records = Record::with(['student','campus','programs'])->findOrFail($id);
+        return view('pages.records.data',compact('records'));
     }
 
 }

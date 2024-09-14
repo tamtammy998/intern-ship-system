@@ -25,10 +25,24 @@
 
             
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="card-title">List of Campuses</h4>
-                <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Campus</button>
+                <h4 class="card-title">List of Programs</h4>
             </div>
       
+            <div class="d-flex flex-wrap mb-2">
+                <div class="row">
+                    <div class="col-md-9 d-flex align-items-center">
+                        <div id="filters-container" class="d-flex flex-wrap w-100">
+                            <!-- Your filters content can go here -->
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 d-flex align-items-center justify-content-end">
+
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-secondary mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Program</button>
+
       
 
                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
@@ -147,28 +161,50 @@
         // Fetching the unique programs from Laravel Blade
         var campuses = @json($campuses);
 
+        // setTimeout(function() {
+        //     // Create a filter dropdown for campuses
+        //     var campusFilter = '<label "> Filter by Campus: <select id="campus-filter" class="form-select form-select-sm" style="display: inline-block; width: auto;">' +
+        //         '<option value="">Select Campus</option>';
+
+        //     // Generate the options dynamically
+        //     campuses.forEach(function(campus) {
+        //         campusFilter += '<option value="' + campus.name + '">' + campus.name + '</option>';
+        //     });
+
+        //     campusFilter += '</select></label>';
+
+        //     // Insert the filter dropdown before the search input
+        //     $(campusFilter).insertBefore('#datatable-buttons_wrapper .dataTables_filter input');
+
+        //     // Add an event listener to filter the table by the selected program
+        //     $('#campus-filter').on('change', function() {
+        //         var selectedCampus = $(this).val();
+        //         table.column(3).search(selectedCampus).draw(); // Update column index based on actual Program column
+        //     });
+        // }, 100); // Adjust delay if necessary
+
+
         setTimeout(function() {
             // Create a filter dropdown for campuses
-            var campusFilter = '<label "> Filter by Campus: <select id="campus-filter" class="form-select form-select-sm" style="display: inline-block; width: auto;">' +
+            var campusFilter = '<label class="me-2"> Filter by Campus: <select id="campus-filter" class="form-select form-select-sm d-inline-block w-auto">' +
                 '<option value="">Select Campus</option>';
 
-            // Generate the options dynamically
             campuses.forEach(function(campus) {
                 campusFilter += '<option value="' + campus.name + '">' + campus.name + '</option>';
             });
 
             campusFilter += '</select></label>';
 
-            // Insert the filter dropdown before the search input
-            $(campusFilter).insertBefore('#datatable-buttons_wrapper .dataTables_filter input');
+            // Insert the filter dropdowns before the search input
+            $('#filters-container').append(campusFilter);
 
-            // Add an event listener to filter the table by the selected program
+            // Add event listeners to filter the table by selected program or campus
             $('#campus-filter').on('change', function() {
                 var selectedCampus = $(this).val();
-                table.column(3).search(selectedCampus).draw(); // Update column index based on actual Program column
+                table.column(3).search(selectedCampus).draw();
             });
-        }, 100); // Adjust delay if necessary
 
+        }, 100);
 
 
     });

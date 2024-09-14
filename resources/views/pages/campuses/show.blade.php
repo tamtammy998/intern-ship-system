@@ -25,7 +25,7 @@
                 <center>
                 <div class="col-md-3 mb-3">
                     <label class="control-label">Campuses</label>
-                    <select class="form-control select2" name="campus_id" required>
+                    <select class="form-control select2" name="campus_id" required onchange="get_campus(this.value)">
                         <option value="">Select</option>
                         @foreach ($campuses as $campus)
                             <option value="{{ $campus->id }}">{{ $campus->name }}</option>
@@ -44,32 +44,82 @@
 
 </x-app-layout>
 <script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+    const appUrl = document.querySelector('meta[name="app-url"]').getAttribute('content');
+    google.charts.load('current', {'packages':['corechart']});
+    // google.charts.setOnLoadCallback(drawChart);
 
-function drawChart() {
-  const data = google.visualization.arrayToDataTable([
-    ['Country', 'Mhl'],
-    ['Italy',54.8],
-    ['France',48.6],
-    ['Spain',44.4],
-    ['USA',23.9],
-    ['Argentina',14.5]
-  ])
+    function get_campus(id) {
+    $.ajax({
+        type: "POST",
+        url: appUrl + '/campuses/program',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        data: {
+            id: id // The campus ID to fetch the program data
+        },
+        success: function(response) {
+            const chartElement = document.getElementById('myChart');
+            
+            // Ensure response has valid data
+            if (response && response.length > 0) {
+                const chartData = [['Program Abbreviation', 'Campus ID']];
+                
+                // Loop through response and push data to chartData
+                response.forEach(function(item) {
+                    chartData.push([item[0], item[1]]);
+                });
 
-  // Loop through the countries
-  for (let i = 1; i < data.getNumberOfRows(); i++) {
-    const country = data.getValue(i, 0);
-    const mhl = data.getValue(i, 1);
-    console.log(`Country: ${country}, Mhl: ${mhl}`);
-  }
+                const googleData = google.visualization.arrayToDataTable(chartData);
 
-  const options = {
-    title:'Bohol Island State Campuses',
-    is3D:true
-  };
+                // Logging the values
+                for (let i = 1; i < googleData.getNumberOfRows(); i++) {
+                    const program = googleData.getValue(i, 0);
+                    const campusId = googleData.getValue(i, 1);
+                    console.log(`Program: ${program}, Campus ID: ${campusId}`);
+                }
 
-  const chart = new google.visualization.PieChart(document.getElementById('myChart'));
-  chart.draw(data, options);
-}
+                // Chart options
+                const options = {
+                    title: 'Bohol Island State Campuses',
+                    is3D: true
+                };
+
+                // Draw the chart
+                const chart = new google.visualization.PieChart(chartElement);
+                chart.draw(googleData, options);
+            } else {
+                // Clear the chart if no data is received
+                const emptyData = [['Program Abbreviation', 'Campus ID']];
+                const emptyGoogleData = google.visualization.arrayToDataTable(emptyData);
+                
+                // Draw an empty chart
+                const options = {
+                    title: 'No Data Available',
+                    is3D: true
+                };
+
+                        const chart = new google.visualization.PieChart(chartElement);
+                        chart.draw(emptyGoogleData, options);
+
+                        console.warn("No data received from the server. The chart has been reset.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+    }
+
+
+
+
+
+$(document).ready(function() {
+  $('.campus_id').change(function() {
+    var selectedValue = $(this).val();
+    console.log(selectedValue); // Outputs the selected value
+  });
+});
+
 </script>

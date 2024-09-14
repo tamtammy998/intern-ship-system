@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('user.update', $users->id) }}" class="needs-validation" novalidate>
+<form method="POST" action="{{ route('user.profile_update', $users->id) }}" class="needs-validation" novalidate>
 @csrf
 @method('PUT')
     <div class="mb-3">
@@ -16,13 +16,15 @@
         <input type="text" name="last_name" value="{{ $users->last_name }}"  class="form-control"  placeholder="Enter Last Name" required>
     </div>
 
-    <div class="mb-3">
-        <label  class="form-label">User Type</label>
+    <div class="mb-3" style="display: none;">
+        <!-- <label  class="form-label">User Type</label>
         <select class="form-select" name="usertype">
             <option value="">Select a Type</option>
             <option value="Admin" {{ $users->usertype == 'Admin' ? 'selected' : '' }}>Admin</option>
             <option value="ojt_in_charge" {{ $users->usertype == 'ojt_in_charge' ? 'selected' : '' }}>OJT in Charge</option>
-        </select>
+        </select> -->
+        <input type="text" name="usertype" value="{{ $users->usertype }}"  class="form-control"  required>
+
     </div>
 
     <div class="mb-3">
@@ -65,10 +67,10 @@
         <input type="email" name="email" value="{{ $users->email }}"  class="form-control"  placeholder="Enter email" required>
     </div>
 
-    <!-- <div class="mb-3">
+    <div class="mb-3">
         <label  class="form-label">Password</label>
         <input type="password" name="password" class="form-control"  placeholder="Enter password" required>
-    </div> -->
+    </div>
 
     <div>
         <button type="submit" class="btn btn-primary w-md">Submit</button>

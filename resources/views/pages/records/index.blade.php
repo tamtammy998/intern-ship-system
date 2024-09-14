@@ -30,6 +30,7 @@
             </div>
       
 
+            
                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
                     <thead>
                     <tr>
@@ -68,10 +69,13 @@
                                         onclick="handleDownload(event, {{ $record->id }})">
                                         <i class="bx bxs-download"></i>
                                     </a>
-
+                                        @if($record->status == 'approved')
+                                        @else
                                         <button type="submit" onclick="delete_campus({{ $record->id }})" class="btn btn-danger btn-sm" title="Delete">
                                             <i class='bx bxs-trash-alt'></i>
                                         </button>
+                                        @endif
+                                     
                                 </div>
                             </td>
                         </tr>

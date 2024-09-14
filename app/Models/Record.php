@@ -12,6 +12,8 @@ class Record extends Model
     
     protected $fillable = [
         'student_id',
+        'campus_id',
+        'courses_id',
         'hours',
         'document_name',
         'date_from',
@@ -27,5 +29,16 @@ class Record extends Model
     {
         return $this->belongsTo(User::class, 'student_id');
     }
+
+    public function campus(): BelongsTo
+    {
+        return $this->belongsTo(Campuses::class, 'campus_id');
+    }
+
+    public function programs(): BelongsTo
+    {
+        return $this->belongsTo(Program::class, 'courses_id'); // Assuming 'courses_id' refers to Program's 'id'
+    }
+
 
 }

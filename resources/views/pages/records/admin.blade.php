@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">Requirements</h4>
+            <h4 class="mb-sm-0 font-size-18">Accomplishment </h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -25,13 +25,31 @@
 
             
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="card-title">List of Requirements</h4>
+                <h4 class="card-title">Accomplishment Reports</h4>
             </div>
       
+      
+                @if(Auth::user()->usertype == 'Admin')
+                <div class="d-flex flex-wrap mb-2">
+                        <div class="row">
+                            <div class="col-md-9 d-flex align-items-center">
+                                <div id="filters-container" class="d-flex flex-wrap w-100">
+                                    <!-- Your filters content can go here -->
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3 d-flex align-items-center justify-content-end">
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
                     <thead>
                     <tr>
+                        <th>Intern Name</th>
+                        <th>Campus</th>
+                        <th>Program</th>
                         <th>Date Range</th>
                         <th>Hours</th>
                         <th>Attachment</th>
@@ -44,6 +62,9 @@
                     <tbody>
                         @foreach($records as $record)
                         <tr>
+                            <td>{{ ucwords($record->student->first_name . ' ' .$record->student->middle_name. ' ' .$record->student->last_name ) }}</td>
+                            <td>{{ ucwords($record->campus->name) }}</td>
+                            <td>{{ ucwords($record->programs->abbreviation) }}</td>
                             <td>{{ date('F j, Y', strtotime($record->date_from)) }} - {{ date('F j, Y', strtotime($record->date_to)) }} </td>
                             <td>{{ $record->hours }}</td>
                             <td>{{ $record->document_name }}</td>
@@ -68,8 +89,8 @@
                                         <i class="bx bxs-download"></i>
                                     </a>
 
-                                        <button type="submit" onclick="delete_campus({{ $record->id }})" class="btn btn-danger btn-sm" title="Delete">
-                                            <i class='bx bxs-trash-alt'></i>
+                                        <button type="submit" onclick="approved_report({{ $record->id }})" class="btn btn-warning btn-sm" title="Approved">
+                                            <i class='bx bxs-hand-up'></i>
                                         </button>
                                 </div>
                             </td>
@@ -135,7 +156,9 @@
         <h5 id="offcanvasRightLabel"></h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
+
     <div class="offcanvas-body">
+    <h4 class="card-title mb-4">Requirement Details</h4>
         <div class="px-0 pb-0 tab-campus-content">
 
         </div>   
@@ -154,21 +177,55 @@
 
 const appUrl = document.querySelector('meta[name="app-url"]').getAttribute('content');
 $(document).ready(function() {
+        var table = $("#datatable-buttons").DataTable({
+            lengthChange: false,
+            buttons: ["copy", "excel", "pdf", "colvis"],
+            responsive: true
+        });
 
+        table.buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)");
+        $(".dataTables_length select").addClass("form-select form-select-sm");
 
+        // Fetching the unique programs from Laravel Blade
+        var programs = @json($programs);
+        var campuses = @json($campuses);
 
-    var table = $("#datatable-buttons").DataTable({
-        lengthChange: false,
-        buttons: ["copy", "excel", "pdf", "colvis"]
+        setTimeout(function() {
+            // Create a filter dropdown for campuses
+            var campusFilter = '<label class="me-2"> Filter by Campus: <select id="campus-filter" class="form-select form-select-sm d-inline-block w-auto">' +
+                '<option value="">Select Campus</option>';
+
+            campuses.forEach(function(campus) {
+                campusFilter += '<option value="' + campus.name + '">' + campus.name + '</option>';
+            });
+
+            campusFilter += '</select></label>';
+
+            // Create a filter dropdown for programs
+            var programFilter = '<label class="me-2"> Filter by Programs: <select id="program-filter" class="form-select form-select-sm d-inline-block w-auto">' +
+                '<option value="">Select Program</option>';
+
+            programs.forEach(function(program) {
+                programFilter += '<option value="' + program.abbreviation + '">' + program.abbreviation + '</option>';
+            });
+
+            programFilter += '</select></label>';
+
+            // Insert the filter dropdowns before the search input
+            $('#filters-container').append(campusFilter).append(programFilter);
+
+            // Add event listeners to filter the table by selected program or campus
+            $('#campus-filter').on('change', function() {
+                var selectedCampus = $(this).val();
+                table.column(1).search(selectedCampus).draw();
+            });
+
+            $('#program-filter').on('change', function() {
+                var selectedProgram = $(this).val();
+                table.column(2).search(selectedProgram).draw();
+            });
+        }, 100);
     });
-
-    table.buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)");
-
-    $(".dataTables_length select").addClass("form-select form-select-sm");
-
-
-
-});
 
 function get_data(id) {
     // Your code to handle the ID
@@ -189,46 +246,21 @@ function get_data(id) {
     });
 }
 
-function delete_campus(id) {
+function approved_report(id) {
     // Your code to handle the ID
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                type: "POST",
-                url: appUrl + '/record/delete',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                data: {
-                    id: id // Your data
-                },
-                success: function(data) {
-                    Swal.fire(
-                        'Deleted!',
-                        'The document has been deleted.',
-                        'success'
-                    ).then(() => {
-                        window.location.reload();
-                    });
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire(
-                        'Error!',
-                        'There was an issue deleting the document.',
-                        'error'
-                    );
-                }
-            });
+    $('#offcanvasRightedit').offcanvas('show');
+    $.ajax({
+        type: "POST",
+        url:appUrl + '/record/data',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        data: {
+            id: id // Your data
+        },
+        success: function(data) {
+            $(".tab-campus-content").show().html(data);
         }
     });
 }
@@ -267,9 +299,9 @@ async function handleDownload(event, documentId) {
         form.submit();
 
         // Optional: Reload the page to refresh the table
-        setTimeout(() => {
-            window.location.reload();
-        }, 600);
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 600);
     } catch (error) {
         console.error('Error during download:', error);
     }

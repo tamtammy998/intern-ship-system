@@ -90,7 +90,6 @@
             </div>
         </div>
         <!-- end card -->
-    
     </div>  
     <div class="col-xl-8">
         <div class="card">
@@ -108,79 +107,50 @@
                         </thead>
                         <tbody>
                             @foreach($documents as $document)
-                            <tr>
-                            <td>{{ $document->name }}</td>
-                            <td>
-                                @foreach($uploads as $upload)
-                                @if($document->id == $upload->document_id)
-                                {{ date('m/d/Y g:i A', strtotime($upload->created_at)) }}
-                                @else
-                                not yet
-                                @endif
-                                @endforeach
-                            </td>
-                            <td>   
-                                @foreach($uploads as $upload)
-                                @if($document->id == $upload->document_id)
+                                <tr>
+                                    <td>{{ $document->name }}</td>
+                                    <td> 
+                                    {{ @$document->upload->created_at ? date('m/d/Y g:i A', strtotime($document->upload->created_at)) : 'Not yet' }}
+                                </td>
                                 
-                                <select class="form-select" id="project-status-input" name="status" onchange="change_status({{ $upload->id }})">
-                                    <option value="">Select a Type</option>
-                                    <option value="pending"  {{ $upload->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="approved" {{ $upload->status == 'approved' ? 'selected' : '' }}>Approved</option>
-                                    <option value="reject" {{ $upload->status == 'reject' ? 'selected' : '' }}>Reject</option>
-                                </select>
-                                @else
-                                not yet
-                                @endif
-                                @endforeach
-                            </td>
-
                                 <td>
-
-                                @foreach($uploads as $upload)
-                                    @if($document->id == $upload->document_id)
-                                        <div class="d-flex justify-content-center">
-                                            @if(in_array(strtolower($upload->document_extension), ['jpg', 'jpeg', 'pdf']))
-                                                <a class="btn btn-primary btn-sm me-2" 
-                                                    href="#" 
-                                                    title="View" 
-                                                    onclick="handlePreview(event, '{{ asset('storage/'. $upload->document_path) }}', {{ $upload->id }})">
-                                                    <i class="bx bx-file"></i>
-                                                </a>
-                                            @endif
-                                            
-                                            <a class="btn btn-success btn-sm me-2" 
+                                        @if(@$document->upload->status)
+                                        <select class="form-control select2" name="gender" onchange="change_status({{ $document->upload->id }}, this.value)">
+                                            <option>Select</option>
+                                            <option value="pending" {{ @$document->upload->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="approved"{{ @$document->upload->status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                            <option value="reject"{{ @$document->upload->status == 'reject' ? 'selected' : '' }}>Reject</option>
+                                        </select>
+                                        @else
+                                        Not yet
+                                        @endif
+                                </td>
+                                <td>
+                                    @if(@$document->upload->status)
+                                    <div class="d-flex justify-content-center">
+                                        @if(in_array(strtolower($document->upload->document_extension), ['jpg', 'jpeg', 'pdf']))
+                                            <a class="btn btn-primary btn-sm me-2" 
                                                 href="#" 
-                                                title="Download" 
-                                                onclick="handleDownload(event, {{ $upload->id }})">
-                                                <i class="bx bxs-download"></i>
+                                                title="View" 
+                                                onclick="handlePreview(event, '{{ asset('storage/'. $document->upload->document_path) }}', {{ $document->upload->id }})">
+                                                <i class="bx bx-file"></i>
                                             </a>
-                                        </div>
+                                        @endif
+                                        
+                                        <a class="btn btn-success btn-sm me-2" 
+                                            href="#" 
+                                            title="Download" 
+                                            onclick="handleDownload(event, {{ $document->upload->id }})">
+                                            <i class="bx bxs-download"></i>
+                                        </a>
+                                    </div>
                                     @else
-                                        <div class="d-flex justify-content-center">
-                                            @if(in_array(strtolower($upload->document_extension), ['jpg', 'jpeg', 'pdf']))
-                                                <a class="btn btn-primary btn-sm me-2 disabled" 
-                                                    href="#" 
-                                                    title="View" 
-                                                    onclick="handlePreview(event, '{{ asset('storage/'. $upload->document_path) }}', {{ $upload->id }})">
-                                                    <i class="bx bx-file"></i>
-                                                </a>
-                                            @endif
-                                            
-                                            <a class="btn btn-success btn-sm me-2 disabled" 
-                                                href="#" 
-                                                title="Download" 
-                                                onclick="handleDownload(event, {{ $upload->id }})">
-                                                <i class="bx bxs-download"></i>
-                                            </a>
-                                        </div>
-                                    @endif
-                                @endforeach
 
-                                    
+                                    @endif
+                                
                                 </td>
 
-                            </tr>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -190,7 +160,6 @@
     </div>
 </div>
 <script>
-
     function change_status(id)
     {
         var status = $("select[name='status']").val();
@@ -251,4 +220,22 @@ async function handleDownload(event, documentId) {
         console.error('Error during download:', error);
     }
 }
+
+    function change_status(id,status)
+    {
+        $.ajax({
+            type: "POST",
+            url: appUrl + '/intern/status',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                 id: id,
+                 status:status
+                 },
+            success: function(data) {
+                // $(".intern-profile").show().html(data);
+            }
+        });
+    }
 </script>

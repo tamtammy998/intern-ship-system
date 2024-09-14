@@ -19,6 +19,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'student_id',
         'first_name',
         'middle_name',
@@ -48,6 +49,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Program::class, 'courses_id'); // Assuming 'courses_id' refers to Program's 'id'
     }
+
+    public function upload(): HasMany
+    {
+        return $this->hasMany(Record::class, 'student_id', 'id');  // Ensure the foreign key is correct
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

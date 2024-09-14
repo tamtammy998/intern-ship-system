@@ -15,11 +15,6 @@
         <div class="mb-3">
         <label class="control-label">Campuses</label>
         <select class="form-control select2" name="campus_id" required>
-            <!-- Display the current campus of the program or a default message -->
-            <option value="{{ $programs->campus_id }}">
-                {{ $programs->campus ? $programs->campus->name : 'No campus assigned' }}
-            </option>
-            <!-- Loop through all campuses to provide other options -->
             @foreach ($campuses as $campus)
                 <option value="{{ $campus->id }}" {{ $programs->campus_id == $campus->id ? 'selected' : '' }}>
                     {{ $campus->name }}

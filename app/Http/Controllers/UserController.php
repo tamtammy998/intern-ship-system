@@ -24,7 +24,13 @@ class UserController extends Controller
         return view('pages.user.index',compact('users','programs','campuses'));
     }
 
-    
+    public function getProgram(Request $request)
+    {
+        $id = $request->input('id');
+        $programs = Program::where('campus_id', $id)->get();
+        return response()->json($programs);
+    }
+
     public function edit(Request $request)
     {     
         $id = $request->input('id');
@@ -34,11 +40,37 @@ class UserController extends Controller
         return view('pages.user.edit', compact('users','programs','campuses'));
     }
 
-    public function update(UpdateUser $request, User $users)
+    public function profileEdit(Request $request)
+    {
+        $id = $request->input('id');
+        $users = User::findOrFail($id); // Fetch the agency by ID
+        $programs = Program::all();
+        $campuses = Campuses::all();
+        return view('pages.students.edit', compact('users','programs','campuses'));
+    }
+
+    public function update(Request $request, User $users)
+    {
+   
+         $users->first_name =  $request->first_name;
+         $users->middle_name =  $request->middle_name;
+         $users->last_name =  $request->last_name;
+         $users->usertype =  $request->usertype;
+         $users->gender =  $request->gender;
+         $users->courses_id =  $request->courses_id;
+         $users->campus_id =  $request->campus_id;
+         $users->contact =  $request->contact;
+         $users->email =  $request->email;
+        $users->save();
+        return redirect()->route('user.index')->with('success', 'User updated successfully.'); // Changed message to reflect "User"
+    }
+
+    public function profileUpdate(UpdateUser $request, User $users)
     {
         $validatedData = $request->validated();
         $users->update($validatedData);
-        return redirect()->route('user.index')->with('success', 'User updated successfully.'); // Changed message to reflect "User"
+        // return redirect()->route('user.index')->with('success', 'User updated successfully.'); // Changed message to reflect "User"
+        return redirect()->back()->with('success', 'User updated successfully.'); // This refreshes the current page
     }
 
     public function store(Request $request)
@@ -79,5 +111,40 @@ class UserController extends Controller
         $user = User::findOrFail($id); // Fetch the agency by ID
         $user->delete();
         return redirect()->route('user.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function campus(Request $request)
+    {
+        $id = $request->input('id');
+        $user = User::findOrFail($id); // Fetch the agency by ID
+        $user->campus_id = $request->input('value');
+        $user->save();
+    }
+
+    public function program(Request $request)
+    {
+        $id = $request->input('id');
+        $user = User::findOrFail($id); // Fetch the agency by ID
+        $user->courses_id = $request->input('value');
+        $user->save();
+    }
+
+    public function changePass(Request $request)
+    {
+        $id = $request->input('id');
+        $users = User::findOrFail($id); // Fetch the agency by ID
+        return view('pages.user.password', compact('users'));
+    }
+
+    public function updatePass(User $users ,Request $request)
+    {
+        $request->validate([
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+    
+        $users->password = Hash::make($request->password);
+        $users->save(); 
+        return redirect()->route('user.index')->with('success', 'Password  updated successfully.');
+
     }
 }

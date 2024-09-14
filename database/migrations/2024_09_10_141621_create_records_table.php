@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('records', function (Blueprint $table) {
             $table->id();
             $table->integer('student_id')->nullable()->default(null);
+            $table->integer('campus_id')->nullable()->default(null);
+            $table->integer('courses_id')->nullable()->default(null);
             $table->text('hours')->nullable()->default(null);
             $table->text('document_name')->nullable()->default(null);
             $table->text('document_path')->nullable()->default(null);
