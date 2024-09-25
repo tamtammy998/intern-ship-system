@@ -202,6 +202,7 @@
 <script>
     const appUrl = document.querySelector('meta[name="app-url"]').getAttribute('content');
     $(document).ready(function() {
+        
         var table = $("#datatable-buttons").DataTable({
             lengthChange: false,
             buttons: ["copy", "excel", "pdf", "colvis"],

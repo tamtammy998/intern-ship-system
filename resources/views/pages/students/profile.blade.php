@@ -109,7 +109,7 @@
                             @foreach($documents as $document)
                                 <tr>
                                     <td>{{ $document->name }}</td>
-                                    <td> 
+                                <td> 
                                     {{ @$document->upload->created_at ? date('m/d/Y g:i A', strtotime($document->upload->created_at)) : 'Not yet' }}
                                 </td>
                                 

@@ -156,7 +156,6 @@
                                                     </td>
                                                     <td>
                                                         {{ @$document->upload->status ?  $document->upload->status : 'Not yet' }}
-
                                                     </td>
                                                     </tr>
                                                 @endforeach
