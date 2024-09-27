@@ -150,6 +150,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/delete', [RecordController::class, 'destroy'])->name('delete');
             Route::post('/data', [RecordController::class, 'data'])->name('data');
         });
+
+        Route::get('/print/pdfrequest/{id}', [RequirementController::class, 'printPdfRequest'])->name('print.pdfrequest');
 });
 
 require __DIR__.'/auth.php';

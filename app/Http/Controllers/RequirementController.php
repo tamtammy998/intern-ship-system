@@ -12,6 +12,62 @@ use Symfony\Component\Console\Input\Input;
 
 class RequirementController extends Controller
 {
+
+    public function printPdfRequest($id)
+    {
+        if($id == '1')
+        {
+            // Set options for Dompdf
+        $options = new \Dompdf\Options();
+        $options->set('isRemoteEnabled', true); // Enable remote content
+        $pdf = new \Dompdf\Dompdf($options); // Create a new instance of Dompdf
+            
+        $a = 'a';
+
+        // Load a view that will be converted into the PDF
+        $pdf->loadHtml(view('pages.templates.memorandom', compact('a'))->render());
+    
+        // Set paper size and orientation
+        // $pdf->setPaper('A4', 'portrait');
+        $pdf->setPaper('legal', 'portrait');
+
+    
+        // Render the PDF
+        $pdf->render();
+    
+        // Set headers to display PDF in the browser
+        return response($pdf->output())
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="request.pdf"');
+
+        }else if($id == '2'){
+
+            // Set options for Dompdf
+            $options = new \Dompdf\Options();
+            $options->set('isRemoteEnabled', true); // Enable remote content
+            $pdf = new \Dompdf\Dompdf($options); // Create a new instance of Dompdf
+                
+            $a = 'a';
+
+            // Load a view that will be converted into the PDF
+            $pdf->loadHtml(view('pages.templates.consent', compact('a'))->render());
+        
+            // Set paper size and orientation
+            $pdf->setPaper('A4', 'portrait');
+
+        
+            // Render the PDF
+            $pdf->render();
+        
+            // Set headers to display PDF in the browser
+            return response($pdf->output())
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'inline; filename="request.pdf"');
+                
+        }
+
+    }
+
     public function index()
     {
         $documents = Document::all();

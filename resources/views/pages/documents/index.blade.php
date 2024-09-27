@@ -37,7 +37,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach($documents as $document)
+                        <!-- @foreach($documents as $document)
                         <tr>
                             <td>{{ $document->name}}</td>
                             <td>{{ $document->description}}</td>
@@ -56,7 +56,31 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @endforeach -->
+
+                        <tr>
+                            <td>Memorandom of Agreement</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(1)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Parents Consent</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(2)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
+
+
                     </tbody>
                 </table>
             </div>
@@ -167,4 +191,9 @@ function delete_document(id) {
     });
 }
 
+
+function pdf_form(id)
+{   
+    var win = window.open(appUrl + "/print/pdfrequest/" + id, '_blank');
+}
 </script>
