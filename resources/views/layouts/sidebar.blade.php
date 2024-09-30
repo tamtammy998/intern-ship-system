@@ -111,7 +111,7 @@
             <li>
                 <a href="{{ route('requirement.index') }}" class="waves-effect">
                     <i class="bx bxs-bar-chart-alt-2"></i>
-                    <span key="t-dashboards">Upload Requirements</span>
+                    <span key="t-dashboards">Requirements</span>
                 </a>
             </li>
 

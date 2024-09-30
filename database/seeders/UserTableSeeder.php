@@ -15,9 +15,10 @@ class UserTableSeeder extends Seeder
     {
         User::firstOrCreate([
             'student_id' => '00000',
-            'first_name' => 'Hecel',
+            'first_name' => 'Admin Acount',
             'email' => 'kavibes11@gmail.com',
-             'usertype' => 'Admin',
+            'usertype' => 'Admin',
+            'campus_id' => 1,
             'password' => bcrypt('password'),
         ]);
     }

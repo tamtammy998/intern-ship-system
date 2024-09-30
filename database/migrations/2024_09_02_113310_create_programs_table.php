@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('abbreviation')->nullable()->default(null);
             $table->string('name')->nullable()->default(null);
             $table->foreignId('campus_id')->nullable()->default(null)->constrainted('campuses');
+            $table->string('oic')->nullable()->default(null);
             $table->string('description')->nullable()->default(null);
             $table->timestamps();
         });

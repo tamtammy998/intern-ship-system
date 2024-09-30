@@ -25,7 +25,7 @@
       
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="card-title">List of Requirements</h4>
-                <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Requirement</button>
+                <!-- <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Requirement</button> -->
             </div>
 
                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
@@ -74,6 +74,17 @@
                             <td></td>
                             <td>
                                 <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(2)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Accomplishment Reports</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(3)">
                                     <i class="bx bx-printer"></i> 
                                     print
                                 </a>

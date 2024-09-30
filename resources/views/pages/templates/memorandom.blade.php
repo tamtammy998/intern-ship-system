@@ -137,7 +137,7 @@
 
         <span style="font-size: 14px;padding-left:5%">KNOW ALL PERSONS BY THESE PRESENTS:</span><br><br><br>
 
-        <span  style="text-align: justify;display: inline-block;padding-left:5%;padding-right:5%;font-size:small;">This AGREEMENT is made and entered into by and between : Bohol Island State University, a state university established by virtue of RA 9722, with official business address at Baliliha Campus Magsija, Balilihan, Bohol duty represented in this instance by JEAN F. NEBREA, PhD., Campus Director, hereinafter reffered to as the FIRST PARTY;</span>
+        <span  style="text-align: justify;display: inline-block;padding-left:5%;padding-right:5%;font-size:small;">This AGREEMENT is made and entered into by and between : Bohol Island State University, a state university established by virtue of RA 9722, with official business address at <b>{{ @$campus->location }}</b> Bohol duty represented in this instance by <b>{{ @$campus->oic }}</b> Campus Director, hereinafter reffered to as the FIRST PARTY;</span>
         <br><br>
         <span style="font-size: small;"><center> - and - </center></span>
 
@@ -225,7 +225,7 @@
                 <tr>
                     <td style="width:50%;">
                     <div class="row">
-                        <span style="font-size: small;"><center><strong>BOHOL ISLAND STATE UNIVERSITY</strong>  <br> Balilihan Campus </center> </span>
+                        <span style="font-size: small;"><center><strong>BOHOL ISLAND STATE UNIVERSITY </strong>  <br> {{ @$campus->location }}</center> </span>
                     </div>
                     </td>
                     <td style="width:50%;">
@@ -241,7 +241,7 @@
                 <tr>
                     <td style="width:50%;">
                     <div class="row">
-                        <span style="font-size: small;"><center><strong>JEAN F. NEBREA, PhD.</strong>  <br>  Campus Director  <br>  <strong> FIRST PARTY</strong> </center> </span>
+                        <span style="font-size: small;"><center><strong>{{ @$campus->president }}</strong>  <br>  Campus Director  <br>  <strong> FIRST PARTY</strong> </center> </span>
                     </div>
                     </td>
                     <td style="width:50%;">

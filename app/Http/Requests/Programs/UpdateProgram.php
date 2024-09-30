@@ -25,6 +25,7 @@ class UpdateProgram extends FormRequest
             'abbreviation' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'campus_id' => 'required|string|max:255',
+            'oic' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
         ];
     }

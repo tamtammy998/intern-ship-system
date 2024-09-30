@@ -16,6 +16,7 @@ class Program extends Model
         'abbreviation',
         'name',
         'campus_id',
+        'oic',
         'description',
     ];
 

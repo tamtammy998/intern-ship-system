@@ -88,7 +88,7 @@
 
                     <div class="mb-3">
                         <label  class="form-label">Office In Charge</label>
-                        <input type="text" class="form-control" name="president" placeholder="Enter Office In Charge">
+                        <input type="text" class="form-control" name="president" placeholder="Enter Office In Charge / Campus Director">
                     </div>
 
                     <div class="mb-3">
@@ -97,8 +97,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label  class="form-label">Location</label>
-                        <input type="text" class="form-control" name="location" placeholder="Enter Location">
+                        <label  class="form-label">Location / Campus </label>
+                        <input type="text" class="form-control" name="location" placeholder="G.E Balilihan Campus,Magsija Balilihan">
+                        <p style="color:red">G.E Balilihan Campus,Magsija Balilihan</p>
                     </div>
 
                     <div>

@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('record.update', $records->id) }}" class="needs-validation" novalidate>
+<form method="POST" action="{{ route('record.update', @$records->id) }}" class="needs-validation" novalidate>
 @csrf
 @method('PUT')
 
@@ -8,22 +8,22 @@
                             
                             <tr>
                                 <th scope="row">Student ID :</th>
-                                <td>{{ $records->student->student_id  }}</td>
+                                <td>{{ @$records->student->student_id  }}</td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Full Name :</th>
-                                <td>{{ ucwords($records->student->first_name . ' ' .$records->student->middle_name. ' ' .$records->student->last_name ) }}</td>
+                                <td>{{ ucwords(@$records->student->first_name . ' ' .@$records->student->middle_name. ' ' .@$records->student->last_name ) }}</td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Campus :</th>
-                                <td>{{ $records->campus->name  }}</td>
+                                <td>{{ @$records->campus->name  }}</td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Program :</th>
-                                <td>{{ $records->programs->abbreviation  }}</td>
+                                <td>{{ @$records->programs->abbreviation  }}</td>
                             </tr>
 
 

@@ -107,26 +107,51 @@
 
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">Submitted Requirements</h4>
+                <h4 class="card-title mb-4"> Requirements</h4>
                 <div class="table-responsive">
-                    <table class="table table-nowrap table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">Requirements</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Memorandom of Agreement</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(1)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
 
-                        <tbody>
-                            @foreach($requirements as $requirement)
-                                <tr>
-                                    <td>{{ $requirement->name }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                        <tr>
+                            <td>Parents Consent</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(2)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
 
-                        </tbody>
-                    </table>
+                        <tr>
+                            <td>Accomplishment Reports</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(3)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
             </div>
         </div>
@@ -213,7 +238,7 @@
                                     <p class="mb-2">Welcome to IRMS </p>
                                     <h5 class="mb-1">{{ Auth::user()->first_name }}</h5>
                                     <p class="mb-0">
-                                        <storng> ( {{ $user->programs->abbreviation }} )</storng> 
+                                        <storng> ( {{ @$user->programs->abbreviation }} )</storng> 
                                         @if(Auth::user()->usertype == 'ojt_in_charge')
                                         OJT COORDINATOR 
                                         @else
@@ -221,7 +246,7 @@
                                     </p>
 
                                     <p class="mb-0">
-                                        {{ $user->campus->name }}
+                                        {{ @$user->campus->name }}
                                     </p>
                                 </div>
                             </div>
@@ -255,24 +280,49 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">Intern Requirements</h4>
                 <div class="table-responsive">
-                    <table class="table table-nowrap table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">Requirements</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Memorandom of Agreement</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(1)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
 
-                        <tbody>
-                            @foreach($requirements as $requirement)
-                                <tr>
-                                    <td>{{ $requirement->name }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                        <tr>
+                            <td>Parents Consent</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(2)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
 
-                        </tbody>
-                    </table>
+                        <tr>
+                            <td>Accomplishment Reports</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(3)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
             </div>
         </div>
@@ -354,8 +404,11 @@
                             <div class="flex-grow-1 align-self-center">
                                 <div class="text-muted">
                                     <p class="mb-2">Welcome to IRMS </p>
-                                    <h5 class="mb-1">{{ Auth::user()->first_name }}</h5>
+                                    <h5 class="mb-1">{{ ucwords(Auth::user()->first_name) }}</h5>
                                     <p class="mb-0">{{ Auth::user()->usertype }}</p>
+                                    @foreach($records as $record)
+                                    <p class="mb-0">{{ @$record->campus->name }}  ({{  @$record->programs->abbreviation }} )</p>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -417,37 +470,51 @@
 
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">Submitted Requirements</h4>
+                <h4 class="card-title mb-4">Requirements</h4>
                 <div class="table-responsive">
-                    <table class="table table-nowrap table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">Requirements</th>
-                                <th scope="col">Date Submitted</th>
-                                <th scope="col">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Memorandom of Agreement</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(1)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
 
-                        <tbody>
-                            @foreach($documents as $document)
-                                <tr>
-                                    <td>{{ $document->name }}</td>
-                                    <td> 
-                                    {{ @$document->upload->created_at ? date('m/d/Y g:i A', strtotime($document->upload->created_at)) : 'Not yet' }}
-                                </td>
-                                
-                                <td>
-                                    {{ @$document->upload->status ?  $document->upload->status : 'Not yet' }}
+                        <tr>
+                            <td>Parents Consent</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(2)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
 
-                                </td>
-
-                                </tr>
-                            @endforeach
-                        </tbody>
-
-                        </tbody>
-                    </table>
+                        <tr>
+                            <td>Accomplishment Reports</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(3)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
             </div>
         </div>
@@ -509,6 +576,8 @@
 
 </x-app-layout>
 <script>
+    
+const appUrl = document.querySelector('meta[name="app-url"]').getAttribute('content');
     async function handleDownload(event, documentId) {
     event.preventDefault(); // Prevent default anchor behavior
 
@@ -586,5 +655,10 @@ if (radialbarColors) {
     );
 
     chart.render();
+}
+
+function pdf_form(id)
+{   
+    var win = window.open(appUrl + "/print/pdfrequest/" + id, '_blank');
 }
 </script>

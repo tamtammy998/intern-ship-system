@@ -62,8 +62,8 @@
 
         
         <p style="font-size:small;text-align: justify;display: inline-block;">
-            &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;We  <span><span class="signature-line">_________________________________________________________________</span> guardian/parents</span>,
-        &nbsp; &nbsp;&nbsp;&nbsp;of  <span><span class="signature-line">__________________________________________</span>, a student of Bohol Island State University - Balilihan Campus , Magsija, Balilihan, Bohol, and a resident of
+            &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;We  <span><span class="signature-line" style="border-bottom: solid 1px;"> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;{{ ucwords(@$user->mname) }}, {{ ucwords(@$user->fname) }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> guardian/parents</span>,
+        &nbsp; &nbsp;&nbsp;&nbsp;of  <span><span class="signature-line"  style="border-bottom: solid 1px;">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;{{ ucwords(@$user->first_name) }}, {{ ucwords(@$user->middle_name) }}, {{ ucwords(@$user->last_name) }}&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</span>, a student of {{ @$campus->location }} and a resident of
         <span class="signature-line">__________________________________________</span>granted her/him permission to undergo On-the-Job Training at the <span class="signature-line">___________________________________</span>,
         This training is necessary and part of the curriculum of the school.  
         </span>,
@@ -71,7 +71,7 @@
 
         <br>
         <p style="font-size:small;text-align: justify;display: inline-block;">
-            &nbsp; We, affirm that the BISU Balilihan Campus and the <span><span class="signature-line">___________________________________________________________</span> are in no way responsible for any accident, harm, injury that may be caused on her/his person during the training and that this student will undergo actual On-the-Job Training with or without compensation from both the BISU-Balilihan Campus and the 
+            &nbsp; We, affirm that the {{ @$campus->location }} and the <span><span class="signature-line">___________________________________________________________</span> are in no way responsible for any accident, harm, injury that may be caused on her/his person during the training and that this student will undergo actual On-the-Job Training with or without compensation from both the {{ @$campus->location }} and the 
             <span class="signature-line">_____________________________________________________</span>.
         </span>,
         </p>
@@ -88,15 +88,15 @@
         </p>
 
         <div class="signature" style="padding-right: 30px;font-size:small">
-          <span class="signature-line" style="font-size:small;padding-right:30px;">_____________________<br> Parent/Guardian</span><br><br>
-          <span class="signature-line" style="font-size: small;padding-right:30px;">_____________________<br>  Student/Trainee</span>
+          <span class="signature-line" style="font-size:small;border-bottom:solid 1px;padding-left:50px;padding-right:50px;">{{ ucwords(@$user->mname) }}, {{ ucwords(@$user->fname) }} </span><br> Parent/Guardian<br><br>
+          <span class="signature-line" style="font-size: small;border-bottom:solid 1px;padding-left:50px;padding-right:50px;">{{ ucwords(@$user->first_name) }}, {{ ucwords(@$user->middle_name) }}, {{ ucwords(@$user->last_name) }}</span><br>  Student/Trainee
         </div>
     </div>
 
     <div class="witnesses" style="font-size:small">
         <p>Witnesses:</p>
-        <p style="padding-left: 100px;"><strong>BENJAMIN K. OMAMALIN, Ph.D. </strong><br> <span style="padding-left: 60px;"> Dean, CTAS </span></p><br>
-        <p style="padding-left: 100px;"><strong>BENJAMIN K. OMAMALIN, Ph.D. </strong><br> <span style="padding-left: 0px;"> OJT Coordinator – Dean of CCIS </span></p><br>
+        <p style="padding-left: 100px;"><strong>{{ @$program->oic }}</strong><br> <span style="padding-left: 60px;"> Dean, CTAS </span></p><br>
+        <p style="padding-left: 100px;"><strong>{{ @$program->oic }}</strong><br> <span style="padding-left: 0px;"> OJT Coordinator – Dean of CCIS </span></p><br>
     </div>
 </body>
 </html>

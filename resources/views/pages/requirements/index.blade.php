@@ -26,7 +26,7 @@
             
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="card-title">List of Requirements</h4>
-                <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Upload Requirement</button>
+                <!-- <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Upload Requirement</button> -->
             </div>
       
 
@@ -34,53 +34,43 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Upload Type</th>
-                        <th>File Size</th>
-                        <th>Date Uploaded</th>
-                        <th>Notes</th>
-                        <th>Extension</th>
-                        <th>Status</th>
+                        <th>Description</th>
                         <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($uploads as $upload)
-                    <tr>
-                        <td>
-                            <span>{{ strlen($upload->document_name) > 20 ? substr($upload->document_name,0,20)."..." : $upload->document_name; }}</span>
-                        </td>
-                        <td>{{ @$upload->document->name }}</td>
-                        <td>{{ @$upload->document_size }}</td>
-                        <td>{{ @date('m/d/Y g:i A', strtotime($upload->created_at)) }}</td>
-                        <td>{{ @$upload->description }}</td>
-                        <td>{{ @$upload->document_extension }}</td>
-                        <td>{{ @$upload->status }}</td>
-                        <td>
-                            <div class="d-flex justify-content-center">
-                                @if(in_array(strtolower($upload->document_extension), ['jpg', 'jpeg', 'pdf']))
-                                    <a class="btn btn-primary btn-sm me-2" 
-                                        href="#" 
-                                        title="View" 
-                                        onclick="handlePreview(event, '{{ asset('storage/'. $upload->document_path) }}', {{ $upload->id }})">
-                                        <i class="bx bx-file"></i>
-                                    </a>
-                                @endif
-                                
-                                <a class="btn btn-success btn-sm me-2" 
-                                    href="#" 
-                                    title="Download" 
-                                    onclick="handleDownload(event, {{ $upload->id }})">
-                                    <i class="bx bxs-download"></i>
+                        <tr>
+                            <td>Memorandom of Agreement</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(1)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
                                 </a>
+                            </td>
+                        </tr>
 
-                                    <button type="submit" onclick="delete_campus({{ $upload->id }})" class="btn btn-danger btn-sm" title="Delete">
-                                        <i class='bx bxs-trash-alt'></i>
-                                    </button>
-                            </div>
-                        </td>
+                        <tr>
+                            <td>Parents Consent</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(2)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
 
-                    </tr>
-                    @endforeach
+                        <tr>
+                            <td>Accomplishment Reports</td>
+                            <td></td>
+                            <td>
+                                <a class="profile-action text-info" href="javascript:void(0)"  title="Profile" onclick="pdf_form(3)">
+                                    <i class="bx bx-printer"></i> 
+                                    print
+                                </a>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -277,4 +267,8 @@ async function handleDownload(event, documentId) {
     }
 }
 
+function pdf_form(id)
+{   
+    var win = window.open(appUrl + "/print/pdfrequest/" + id, '_blank');
+}
 </script>

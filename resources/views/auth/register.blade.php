@@ -13,8 +13,12 @@
         @include('layouts.style')
     </head>
 
+
+
     <body>
         
+    <div id="error-messages"></div>
+<div id="success-message" style="display: none"></div>
         <div class="account-pages my-5 pt-sm-5">
             <div class="container">
                 <div class="row justify-content-center">
@@ -139,7 +143,7 @@
                                             <!-- Column 3: Password -->
                                             <div class="col-md-4 mb-3">
                                                 <label  class="form-label">Required Hour Completion</label>
-                                                <input type="text" class="form-control" name="completion"  placeholder="Enter Required Hour Completion" required>
+                                                <input type="number" class="form-control" name="completion"  placeholder="Enter Required Hour Completion" required>
                                                 <div class="invalid-feedback">
                                                     Please Enter Required Hour Completion
                                                 </div>

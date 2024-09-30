@@ -17,8 +17,9 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Location</label>
-        <input type="text" class="form-control" name="location" value="{{ $campuses->location }}" placeholder="Enter Location">
+        <label  class="form-label">Location / Campus </label>
+        <input type="text" class="form-control" value="{{ $campuses->location }}" name="location" placeholder="G.E Balilihan Campus,Magsija Balilihan">
+        <p style="color:red">G.E Balilihan Campus,Magsija Balilihan</p>
     </div>
 
     <div>

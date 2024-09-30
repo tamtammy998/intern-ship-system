@@ -62,18 +62,18 @@
                     <tbody>
                         @foreach($records as $record)
                         <tr>
-                            <td>{{ ucwords($record->student->first_name . ' ' .$record->student->middle_name. ' ' .$record->student->last_name ) }}</td>
-                            <td>{{ ucwords($record->campus->name) }}</td>
-                            <td>{{ ucwords($record->programs->abbreviation) }}</td>
-                            <td>{{ date('F j, Y', strtotime($record->date_from)) }} - {{ date('F j, Y', strtotime($record->date_to)) }} </td>
-                            <td>{{ $record->hours }}</td>
-                            <td>{{ $record->document_name }}</td>
-                            <td>{{ $record->remarks }}</td>
-                            <td>{{ $record->status }}</td>
-                            <td>{{ date('F j, Y', strtotime($record->created_at)) }}</td>
+                            <td>{{ ucwords(@$record->student->first_name . ' ' .@$record->student->middle_name. ' ' .@$record->student->last_name ) }}</td>
+                            <td>{{ ucwords(@$record->campus->name) }}</td>
+                            <td>{{ ucwords(@$record->programs->abbreviation) }}</td>
+                            <td>{{ date('F j, Y', strtotime(@$record->date_from)) }} - {{ date('F j, Y', strtotime(@$record->date_to)) }} </td>
+                            <td>{{ @$record->hours }}</td>
+                            <td>{{ @$record->document_name }}</td>
+                            <td>{{ @$record->remarks }}</td>
+                            <td>{{ @$record->status }}</td>
+                            <td>{{ date('F j, Y', strtotime(@$record->created_at)) }}</td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    @if(in_array(strtolower($record->document_extension), ['jpg', 'jpeg', 'pdf']))
+                                    @if(in_array(strtolower(@$record->document_extension), ['jpg', 'jpeg', 'pdf']))
                                         <a class="btn btn-primary btn-sm me-2" 
                                             href="#" 
                                             title="View" 
@@ -89,8 +89,12 @@
                                         <i class="bx bxs-download"></i>
                                     </a>
 
-                                        <button type="submit" onclick="approved_report({{ $record->id }})" class="btn btn-warning btn-sm" title="Approved">
+                                        <button type="submit" onclick="approved_report({{ $record->id }})" class="btn btn-warning btn-sm me-2" title="Approved">
                                             <i class='bx bxs-hand-up'></i>
+                                        </button>
+
+                                        <button type="submit" onclick="delete_records({{ $record->id }})" class="btn btn-danger btn-sm" title="Delete">
+                                            <i class='bx bxs-trash-alt'></i>
                                         </button>
                                 </div>
                             </td>
@@ -264,6 +268,53 @@ function approved_report(id) {
         }
     });
 }
+
+function delete_records(id) {
+    // Your code to handle the ID
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url:appUrl + '/record/delete',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: {
+                    id: id // Your data
+                },
+                success: function(data) {
+                    Swal.fire(
+                        'Deleted!',
+                        'The document has been deleted.',
+                        'success'
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire(
+                        'Error!',
+                        'There was an issue deleting the document.',
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+
+}
+
+
 
 async function handlePreview(event, imageUrl, documentId) {
     event.preventDefault(); // Prevent default anchor navigation

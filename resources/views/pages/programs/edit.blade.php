@@ -24,7 +24,10 @@
         <x-input-error :messages="$errors->get('campus_id')" class="mt-2" />
     </div>
 
-
+    <div class="mb-3">
+        <label  class="form-label">OJT Director / Dean</label>
+        <input type="text" class="form-control" name="oic" value="{{ $programs->oic }}" placeholder="OJT Director / Dean">
+    </div>
 
     <div class="mb-3">
         <label  class="form-label">Description</label>

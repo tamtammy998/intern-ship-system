@@ -52,6 +52,7 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>Campus</th>
+                        <th>Ojt in Charge / Dean</th>
                         <th>Action</th>
                
                     </tr>
@@ -63,6 +64,7 @@
                             <td>{{ $program->name}}</td>
                             <td>{{ $program->description}}</td>
                             <td>{{ isset($program->campus) ? $program->campus->name : 'No campus assigned' }}</td>
+                            <td>{{ $program->oic}}</td>
                             <td>
                                 <div class="dropdown">
                                     <button class="btn btn-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -116,6 +118,11 @@
                             @endforeach
                         </select>
                         <x-input-error :messages="$errors->get('campus_id')" class="mt-2" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label  class="form-label">OJT Director / Dean</label>
+                        <input type="text" class="form-control" name="oic" placeholder="OJT Director / Dean">
                     </div>
 
                     <div class="mb-3">

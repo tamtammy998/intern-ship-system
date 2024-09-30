@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Campuses;
 use App\Models\Document;
+use App\Models\Program;
 use App\Models\Upload;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -23,9 +26,9 @@ class RequirementController extends Controller
         $pdf = new \Dompdf\Dompdf($options); // Create a new instance of Dompdf
             
         $a = 'a';
-
+        $campus = Campuses::findOrFail(auth()->user()->campus_id); // Fetch the agency by ID
         // Load a view that will be converted into the PDF
-        $pdf->loadHtml(view('pages.templates.memorandom', compact('a'))->render());
+        $pdf->loadHtml(view('pages.templates.memorandom', compact('campus'))->render());
     
         // Set paper size and orientation
         // $pdf->setPaper('A4', 'portrait');
@@ -48,9 +51,11 @@ class RequirementController extends Controller
             $pdf = new \Dompdf\Dompdf($options); // Create a new instance of Dompdf
                 
             $a = 'a';
-
+            $program = Program::findOrFail(@auth()->user()->campus_id); // Fetch the agency by ID
+            $user = User::findOrFail(@auth()->user()->id); // Fetch the agency by ID
+            $campus = Campuses::findOrFail(@auth()->user()->campus_id); // Fetch the agency by ID
             // Load a view that will be converted into the PDF
-            $pdf->loadHtml(view('pages.templates.consent', compact('a'))->render());
+            $pdf->loadHtml(view('pages.templates.consent', compact('program','user','campus'))->render());
         
             // Set paper size and orientation
             $pdf->setPaper('A4', 'portrait');
@@ -64,7 +69,31 @@ class RequirementController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="request.pdf"');
                 
-        }
+            }else if($id == '3'){
+
+                // Set options for Dompdf
+                $options = new \Dompdf\Options();
+                $options->set('isRemoteEnabled', true); // Enable remote content
+                $pdf = new \Dompdf\Dompdf($options); // Create a new instance of Dompdf
+                    
+                $a = 'a';
+    
+                // Load a view that will be converted into the PDF
+                $pdf->loadHtml(view('pages.templates.report', compact('a'))->render());
+            
+                // Set paper size and orientation
+                $pdf->setPaper('A4', 'portrait');
+    
+            
+                // Render the PDF
+                $pdf->render();
+            
+                // Set headers to display PDF in the browser
+                return response($pdf->output())
+                    ->header('Content-Type', 'application/pdf')
+                    ->header('Content-Disposition', 'inline; filename="report.pdf"');
+                    
+            }
 
     }
 
