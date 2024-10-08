@@ -3,7 +3,7 @@
     <head>
         
         <meta charset="utf-8" />
-        <title>Login | Skote - Admin & Dashboard Template</title>
+        <title>Login | Internship Records Monitoring System</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
         <meta content="Themesbrand" name="author" />
@@ -55,7 +55,7 @@
                                             name="email" :value="old('email')" r
                                             equired autofocus autocomplete="username" 
                                             placeholder="Enter username">
-                                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                            <x-input-error :messages="$errors->get('email')" class="mt-2" style="color:red;" />
                                         </div>
                 
                                         <div class="mb-3">
@@ -83,9 +83,9 @@
                                             <button class="btn btn-primary waves-effect waves-light" type="submit">Log In</button>
                                         </div>
 
-                                        <div class="mt-4 text-center">
+                                        <!-- <div class="mt-4 text-center">
                                             <a href="{{ route('password.request') }}" class="text-muted"><i class="mdi mdi-lock me-1"></i> Forgot your password?</a>
-                                        </div>
+                                        </div> -->
                                     </form>
                                 </div>
                                 <div class="mt-5 text-center">
