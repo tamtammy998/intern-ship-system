@@ -42,7 +42,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($interns as $intern)
+                            @foreach($allInterns as $intern)
                             <tr>
                                 <td>{{ $intern->student_id }}</td>
                                 <td>{{ ucwords($intern->first_name . ' ' .$intern->middle_name. ' ' .$intern->last_name ) }}</td>

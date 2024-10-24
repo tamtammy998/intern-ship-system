@@ -1,8 +1,3 @@
-
-        
-        <!-- Responsive examples -->
-
-        <!-- Datatable init js -->
 <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
@@ -10,6 +5,7 @@
 <script src="{{ asset('assets/js/sweetalert2.js') }}"></script>
 
 <script src="assets/js/jquery.dataTables.min.js"></script>  
+<script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 
 <script src="assets/js/dataTables.bootstrap4.min.js"></script>  
 

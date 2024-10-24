@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campuses;
+use App\Models\CampusProgram;
 use App\Models\Program;
 use App\Models\Record;
 use Illuminate\Http\Request;
@@ -14,18 +15,30 @@ class RecordController extends Controller
 {
     public function index()
     {
-        
+        $records = collect(); 
+
         if (auth()->user()->usertype == 'Admin') {
             $programs = Program::all();
             $campuses = Campuses::all();
             $records = Record::with(['student','campus','programs']) ->get();
             return view('pages.records.admin',compact('records','programs','campuses'));
         }elseif(auth()->user()->usertype == 'ojt_in_charge'){
-            $records = Record::with(['student','campus','programs'])->where('campus_id', auth()->user()->campus_id)
-                      ->where('courses_id', auth()->user()->courses_id)->get();
+
+            $campuspgram =  CampusProgram::with('program','campus')->where('user_id', auth()->user()->id)->get();
+
+            foreach($campuspgram as $row)
+            {
+                $data = Record::with(['student','campus','programs'])->where('campus_id', $row->campus_id)
+                ->where('courses_id', $row->program_id)->get();
+                if ($data->isNotEmpty()) {
+                    $records = $records->merge($data); // Merge interns into the collection
+                }
+            }
+
             $programs = Program::all();
             $campuses = Campuses::all();       
             return view('pages.records.admin',compact('records','programs','campuses'));
+
         } else {
             $records = Record::with(['student','campus','programs'])
             ->where('student_id', auth()->user()->id)

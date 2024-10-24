@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUser;
 use App\Models\Campuses;
+use App\Models\CampusProgram;
 use App\Models\Program;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,6 +23,22 @@ class UserController extends Controller
         $campuses = Campuses::all();
         
         return view('pages.user.index',compact('users','programs','campuses'));
+    }
+
+    public function delete_program(Request $request){
+        $id = $request->input('id');
+        $campuspgram = CampusProgram::findOrFail($id); // Fetch the agency by ID
+        $campuspgram->delete();
+        return redirect()->route('user.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function campusprogram(Request $request)
+    {
+        $id = $request->input('id');
+        $campuses = Campuses::all();
+        $campuspgram =  CampusProgram::with('program','campus')->where('user_id', $id)->get();
+        $user  = User::with('campus','programs')->where('id', $id)->first(); 
+        return view('pages.user.details',compact('campuses','campuspgram','id','user'));
     }
 
     public function getProgram(Request $request)
@@ -73,9 +90,40 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'User updated successfully.'); // This refreshes the current page
     }
 
+    public function create_program(Request $request)
+    {
+        $validatedData = $request->validate([
+            'user_id' => ['required', 'string', 'max:20'],
+            'campus_ids' => 'required|array', 
+            'program_ids' => 'required|array', 
+        ]);
+  
+        $campus_idstring = $validatedData['campus_ids'][0]; // Example: "1,2"
+        $campusArray = explode(',', $campus_idstring); // Create an array of campus IDs
+        $campusArray = array_map('intval', $campusArray); // Convert to integers
+
+        $program_idstring = $validatedData['program_ids'][0]; // Example: "1,2" (This should refer to 'program_ids' instead of 'campus_ids')
+        $programArray = explode(',', $program_idstring); // Create an array of program IDs
+        $programArray = array_map('intval', $programArray); // Convert to integers
+
+        $length = min(count($campusArray), count($programArray)); // Get the smaller array length
+        
+        for ($i = 0; $i < $length; $i++) {
+            $campusId = $campusArray[$i];
+            $programId = $programArray[$i];
+
+            $basetrap = New CampusProgram();
+            $basetrap->user_id = $validatedData['user_id'];
+            $basetrap->campus_id = $campusId;
+            $basetrap->program_id = $programId;
+            $basetrap->save();
+        }
+        return redirect()->route('user.index')->with('success', 'Campus created successfully.');
+    }
+
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -86,9 +134,21 @@ class UserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', Rules\Password::defaults()],
             'usertype' => ['required', 'string'],
-            
+            'campus_ids' => 'required|array', 
+            'program_ids' => 'required|array', 
         ]);
 
+  
+        $campus_idstring = $validatedData['campus_ids'][0]; // Example: "1,2"
+        $campusArray = explode(',', $campus_idstring); // Create an array of campus IDs
+        $campusArray = array_map('intval', $campusArray); // Convert to integers
+
+        $program_idstring = $validatedData['program_ids'][0]; // Example: "1,2" (This should refer to 'program_ids' instead of 'campus_ids')
+        $programArray = explode(',', $program_idstring); // Create an array of program IDs
+        $programArray = array_map('intval', $programArray); // Convert to integers
+
+        $length = min(count($campusArray), count($programArray)); // Get the smaller array length
+        
         $user = User::create([
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -102,6 +162,18 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Loop through both arrays in one loop
+        for ($i = 0; $i < $length; $i++) {
+            $campusId = $campusArray[$i];
+            $programId = $programArray[$i];
+
+            $basetrap = New CampusProgram();
+            $basetrap->user_id = $user->id;
+            $basetrap->campus_id = $campusId;
+            $basetrap->program_id = $programId;
+            $basetrap->save();
+        }
+        
         return redirect()->route('user.index')->with('success', 'Campus created successfully.');
     }
 

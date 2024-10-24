@@ -120,6 +120,9 @@ Route::middleware('auth')->group(function () {
             Route::put('/update_password/{users}', [UserController::class, 'updatePass'])->name('update_password'); // Updated here
             Route::post('/profile_edit', [UserController::class, 'profileEdit'])->name('profile_edit');
             Route::put('/profile_update/{users}', [UserController::class, 'profileUpdate'])->name('profile_update');
+            Route::post('/campusprogram', [UserController::class, 'campusprogram'])->name('campusprogram');
+            Route::post('/delete_program', [UserController::class, 'delete_program'])->name('delete_program');
+            Route::post('/create_program', [UserController::class, 'create_program'])->name('create_program');
         });
 
         Route::name('student.')->prefix('/student')->group(function () {

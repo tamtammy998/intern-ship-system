@@ -34,7 +34,7 @@
         </select>
     </div>
 
-    <div class="mb-3">
+    <!-- <div class="mb-3">
         <label class="control-label">Campuses</label>
 
         <select class="form-control select2" id="campus_id" name="campus_id" onchange="get_program1(this.value)" required>
@@ -53,7 +53,7 @@
                 <option value="{{ $program->id }}" {{ $users->courses_id == $program->id ? 'selected' : '' }}>{{ $program->abbreviation }}</option>
             @endforeach
         </select>
-    </div>
+    </div> -->
 
     <div class="mb-3">
         <label  class="form-label">Phone #. :</label>

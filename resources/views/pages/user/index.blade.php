@@ -62,14 +62,18 @@
                                             <i class="bx bx-dots-vertical-rounded"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0);" onclick="change_password({{ $user->id }})">Change Password</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0);" onclick="get_data({{ $user->id }})">View Details</a>
-                                        </li>
-
-                                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="delete_user({{ $user->id }})">Delete</a></li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:void(0);" onclick="change_password({{ $user->id }})">Change Password</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:void(0);" onclick="get_campus_details({{ $user->id }})">View Campus && Programs</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:void(0);" onclick="get_data({{ $user->id }})">View Details</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:void(0);" onclick="delete_user({{ $user->id }})">Delete</a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </td>
@@ -93,7 +97,29 @@
 
                 <form method="POST" action="{{ route('user.create') }}" class="needs-validation" novalidate>
                 @csrf
+                           
+        
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab">
+                            <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                            <span class="d-none d-sm-block">Basic Information</span>    
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#profile" role="tab">
+                            <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                            <span class="d-none d-sm-block">Campus && Programs</span>    
+                        </a>
+                    </li>
+                </ul>
 
+                <!-- Tab panes -->
+                <div class="tab-content p-3 text-muted">
+
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        
                     <div class="mb-3">
                         <label  class="form-label"> First Name</label>
                         <input type="text" name="first_name" class="form-control" placeholder="Enter First Name" required>
@@ -113,7 +139,7 @@
                         <label  class="form-label">User Type</label>
                         <select class="form-select" name="usertype">
                             <option selected>Select Type</option>
-                            <option value="admin">Admin</option>
+                            <option value="Admin">Admin</option>
                             <option value="ojt_in_charge">OJT in Charge</option>
                         </select>
                     </div>
@@ -124,28 +150,6 @@
                             <option>Select</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="control-label">Campuses</label>
-                        <select class="form-control select2" name="campus_id" onchange="get_program(this.value)" required>
-                            <option value="">Select</option>
-                            @foreach ($campuses as $campus)
-                                <option value="{{ $campus->id }}">{{ $campus->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="control-label">Programs</label>
-                        <select class="form-control select2" id="programs" name="courses_id" required>
-                        </select>
-
-                            <!-- <option value="">Select</option>
-                            @foreach ($programs as $program)
-                                <option value="{{ $program->id }}">{{ $program->abbreviation }}</option>
-                            @endforeach -->
                         </select>
                     </div>
 
@@ -164,9 +168,51 @@
                         <input type="password" name="password" class="form-control"  placeholder="Enter password" required>
                     </div>
 
+                 
+                    </div>
+
+                    <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="mb-3">
+                            <label class="control-label">Campuses</label>
+                            <select class="form-control select2" id="campus" name="campus_id" onchange="get_program(this.value)" required>
+                                <option value="">Select</option>
+                                @foreach ($campuses as $campus)
+                                    <option value="{{ $campus->id }}">{{ $campus->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="control-label">Programs</label>
+                            <select class="form-control select2" id="programs" name="courses_id" required>
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" onclick="addCampusProgram()">Add Campus & Program</button>
+                        <table id="campusProgramTable" class="table table-bordered dt-responsive nowrap w-100 mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Campus</th>
+                                    <th>Program</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows will be added dynamically here -->
+                            </tbody>
+                        </table>
+
+                        <!-- Hidden inputs to store the selected campus and program IDs -->
+                        <input type="hidden" id="selectedCampusIds" name="campus_ids[]" value="">
+                        <input type="hidden" id="selectedProgramIds" name="program_ids[]" value="">
+                    </div>
                     <div>
                         <button type="submit" class="btn btn-primary w-md">Submit</button>
                     </div>
+                </div>
+                             
+
+
                 </form>
             </div>
             <!-- end card body -->
@@ -179,7 +225,21 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
+        <h4 class="card-title mb-4">User Details</h4>
         <div class="px-0 pb-0 tab-campus-content">
+
+        </div>   
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="campusprogram" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h4 class="card-title mb-4">Campus && Program Details</h4>
+        <div class="px-0 pb-0 tab-campus-details">
 
         </div>   
     </div>
@@ -282,6 +342,22 @@
         });
     }
 
+    function get_campus_details(id){
+        $('#campusprogram').offcanvas('show');
+        $.ajax({
+            type: "POST",
+            url:appUrl + '/user/campusprogram',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                id: id // Your data
+            },
+            success: function(data) {
+                $(".tab-campus-details").show().html(data);
+            }
+        });
+    }
 
     function get_data(id) {
     // Your code to handle the ID
@@ -337,6 +413,67 @@
             }
         });
     }
+
+    let campusProgramData = [];
+
+    function addCampusProgram() {
+        const campusSelect = document.getElementById('campus');
+        const programSelect = document.getElementById('programs');
+        const campusId = campusSelect.value;
+        const campusName = campusSelect.options[campusSelect.selectedIndex].text;
+        const programId = programSelect.value;
+        const programName = programSelect.options[programSelect.selectedIndex].text;
+
+        // Check if both campus and program are selected
+        if (campusId === "" || programId === "") {
+            alert("Please select both a campus and a program.");
+            return;
+        }
+
+        // Check if the combination already exists
+        if (campusProgramData.find(item => item.campusId === campusId && item.programId === programId)) {
+            alert("This campus and program combination has already been added.");
+            return;
+        }
+
+        // Add the selected campus and program to the array
+        campusProgramData.push({ campusId, programId, campusName, programName });
+
+        // Add a new row to the table
+        const tableBody = document.querySelector("#campusProgramTable tbody");
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${campusName}</td>
+            <td>${programName}</td>
+            <td>
+                <button class="btn btn-danger" type="button" onclick="deleteRow(this, '${campusId}', '${programId}')">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
+
+        // Update hidden input values
+        updateHiddenInputs();
+    }
+
+    function deleteRow(button, campusId, programId) {
+        // Remove the row from the table
+        const row = button.closest('tr');
+        row.remove();
+
+        // Remove the item from the array
+        campusProgramData = campusProgramData.filter(item => !(item.campusId === campusId && item.programId === programId));
+
+        // Update hidden input values
+        updateHiddenInputs();
+    }
+
+    function updateHiddenInputs() {
+        const campusIds = campusProgramData.map(item => item.campusId).join(',');
+        const programIds = campusProgramData.map(item => item.programId).join(',');
+        document.getElementById('selectedCampusIds').value = campusIds;
+        document.getElementById('selectedProgramIds').value = programIds;
+    }
+
 </script>
 
 <style>
